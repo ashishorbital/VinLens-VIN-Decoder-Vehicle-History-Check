@@ -57,27 +57,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     };
   }, []);
 
-  // Auto-hover inspection pulse on touchscreens / mobile devices
-  React.useEffect(() => {
-    const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    if (!isTouch) return;
-
-    let timeoutId: ReturnType<typeof setTimeout>;
-    let intervalId: ReturnType<typeof setInterval>;
-
-    // Start auto-hover pulse after initial page load
-    timeoutId = setTimeout(() => {
-      intervalId = setInterval(() => {
-        setIsInspectingCar(prev => !prev);
-      }, 3800);
-    }, 2400);
-
-    return () => {
-      clearTimeout(timeoutId);
-      clearInterval(intervalId);
-    };
-  }, []);
-
   return (
     <section id="hero-search" className="relative pt-4 sm:pt-6 md:pt-8 pb-16 md:pb-24 overflow-hidden bg-theme-secondary/40 transition-colors duration-200 scroll-mt-20">
       {/* Background subtle radial gradient */}
@@ -109,9 +88,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* 2. Right Column (Desktop): Hero Vehicle with Floating Diagnostic Badges & Tech Glow (Desktop Right, Mobile 2nd) */}
           <Reveal direction="up" distance={16} delay={60} duration={650} className="order-2 lg:order-none lg:col-span-5 lg:row-span-2 relative flex justify-center items-center overflow-visible self-center">
             <div className="relative w-full max-w-lg lg:max-w-none overflow-visible py-2 sm:py-6">
-              {/* Soft Tech Radial Glow Backdrop */}
+              {/* Soft Tech Radial Glow Backdrop - Desktop Only */}
               <div 
-                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[115%] h-[115%] max-w-[540px] max-h-[540px] rounded-full blur-3xl pointer-events-none -z-10 transition-colors duration-500 ${
+                className={`hidden lg:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[115%] h-[115%] max-w-[540px] max-h-[540px] rounded-full blur-3xl pointer-events-none -z-10 transition-colors duration-500 ${
                   isInspecting
                     ? 'bg-gradient-to-tr from-rose-500/15 via-amber-500/10 to-transparent'
                     : 'bg-gradient-to-tr from-accent-primary/12 via-cyan-500/5 to-transparent'
@@ -119,8 +98,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 aria-hidden="true"
               />
 
-              {/* Concentric Telemetry Calibration Rings (Automotive HUD feel) */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[430px] h-[340px] sm:h-[430px] pointer-events-none -z-10 flex items-center justify-center">
+              {/* Concentric Telemetry Calibration Rings (Automotive HUD feel) - Desktop Only */}
+              <div className="hidden lg:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[430px] h-[340px] sm:h-[430px] pointer-events-none -z-10 items-center justify-center">
                 <div
                   className={`w-full h-full rounded-full border border-dashed animate-[spin_60s_linear_infinite] transition-colors duration-500 ${
                     isInspecting ? 'border-rose-400/25' : 'border-accent-primary/15'
@@ -133,11 +112,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 />
               </div>
 
-              {/* Floating Badge 1: Top-Right (Title Status: Clean vs Salvage) */}
+              {/* Floating Badge 1: Top-Right (Title Status: Clean vs Salvage) - Desktop Only */}
               <div
                 onMouseEnter={() => setIsHoveringBadge(true)}
                 onMouseLeave={() => setIsHoveringBadge(false)}
-                className={`hidden sm:flex absolute -top-3 sm:-top-5 -right-2 sm:-right-4 items-center gap-2.5 p-2.5 px-3.5 rounded-2xl backdrop-blur-md border select-none animate-float-badge-1 transition-all duration-300 z-30 cursor-pointer ${
+                className={`hidden lg:flex absolute -top-3 sm:-top-5 -right-2 sm:-right-4 items-center gap-2.5 p-2.5 px-3.5 rounded-2xl backdrop-blur-md border select-none animate-float-badge-1 transition-all duration-300 z-30 cursor-pointer ${
                   isInspecting
                     ? 'bg-rose-50/95 border-rose-300/80 shadow-[0_10px_25px_-4px_rgba(244,63,94,0.2),0_16px_32px_-8px_rgba(225,29,72,0.15)] ring-1 ring-rose-500/25 scale-[1.02]'
                     : 'bg-white/95 border-[#D5E4F0] shadow-[0_8px_20px_-4px_rgba(15,23,42,0.08),0_16px_32px_-8px_rgba(0,152,187,0.12)]'
@@ -176,11 +155,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </div>
               </div>
 
-              {/* Floating Badge 2: Bottom-Left (Mileage: Verified vs Rollback Discrepancy) */}
+              {/* Floating Badge 2: Bottom-Left (Mileage: Verified vs Rollback Discrepancy) - Desktop Only */}
               <div
                 onMouseEnter={() => setIsHoveringBadge(true)}
                 onMouseLeave={() => setIsHoveringBadge(false)}
-                className={`hidden sm:flex absolute -bottom-3 sm:-bottom-5 -left-2 sm:-left-5 items-center gap-2.5 p-2.5 px-3.5 rounded-2xl backdrop-blur-md border select-none animate-float-badge-2 transition-all duration-300 z-30 cursor-pointer ${
+                className={`hidden lg:flex absolute -bottom-3 sm:-bottom-5 -left-2 sm:-left-5 items-center gap-2.5 p-2.5 px-3.5 rounded-2xl backdrop-blur-md border select-none animate-float-badge-2 transition-all duration-300 z-30 cursor-pointer ${
                   isInspecting
                     ? 'bg-amber-50/95 border-amber-300/80 shadow-[0_10px_25px_-4px_rgba(245,158,11,0.2),0_16px_32px_-8px_rgba(217,119,6,0.15)] ring-1 ring-amber-500/25 scale-[1.02]'
                     : 'bg-white/95 border-[#D5E4F0] shadow-[0_8px_20px_-4px_rgba(15,23,42,0.08),0_16px_32px_-8px_rgba(0,152,187,0.12)]'
@@ -220,11 +199,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </div>
               </div>
 
-              {/* Floating Badge 3: Bottom-Right (Accidents: 0 vs 2 Reported) */}
+              {/* Floating Badge 3: Bottom-Right (Accidents: 0 vs 2 Reported) - Desktop Only */}
               <div
                 onMouseEnter={() => setIsHoveringBadge(true)}
                 onMouseLeave={() => setIsHoveringBadge(false)}
-                className={`hidden sm:flex absolute -bottom-2 sm:-bottom-4 -right-1 sm:-right-3 items-center gap-2 p-2 px-3 rounded-xl backdrop-blur-md border select-none transition-all duration-300 z-30 cursor-pointer ${
+                className={`hidden lg:flex absolute -bottom-2 sm:-bottom-4 -right-1 sm:-right-3 items-center gap-2 p-2 px-3 rounded-xl backdrop-blur-md border select-none transition-all duration-300 z-30 cursor-pointer ${
                   isInspecting
                     ? 'bg-rose-50/95 border-rose-300/80 shadow-[0_8px_20px_-4px_rgba(244,63,94,0.18)] ring-1 ring-rose-500/25 scale-[1.02]'
                     : 'bg-white/95 border-[#D5E4F0] shadow-[0_6px_16px_-4px_rgba(15,23,42,0.06)]'
@@ -245,7 +224,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </span>
               </div>
 
-              {/* Interactive Vehicle Inspection Hover Reveal */}
+              {/* Vehicle Inspection Reveal: Only clean car on mobile/tabs */}
               <VehicleInspectReveal
                 cleanSrc="/images/hero-car.png"
                 damagedSrc="/images/hero-car-damaged.png"
@@ -253,63 +232,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 isInspecting={isInspecting}
                 onInspectChange={setIsInspectingCar}
               />
-
-              {/* Mobile Badges Strip (visible on mobile screens below sm) */}
-              <div className="flex sm:hidden items-center justify-center gap-2 pt-3 flex-wrap">
-                <span
-                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-[10px] font-bold shadow-xs transition-colors duration-200 ${
-                    isInspecting
-                      ? 'bg-rose-50 border-rose-300 text-rose-700'
-                      : 'bg-white/95 border-[#D5E4F0] text-theme-primary'
-                  }`}
-                >
-                  <HugeiconsIcon
-                    icon={isInspecting ? SecurityWarningIcon : SecurityCheckIcon}
-                    size={12}
-                    strokeWidth={1.5}
-                    className={isInspecting ? 'text-rose-600' : 'text-emerald-500'}
-                  />
-                  <span>{isInspecting ? 'Salvage Title Brand' : 'Clean Title Verified'}</span>
-                </span>
-                <span
-                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-[10px] font-bold shadow-xs transition-colors duration-200 font-mono ${
-                    isInspecting
-                      ? 'bg-amber-50 border-amber-300 text-amber-800'
-                      : 'bg-white/95 border-[#D5E4F0] text-theme-primary font-medium'
-                  }`}
-                >
-                  <HugeiconsIcon
-                    icon={isInspecting ? Alert02Icon : DashboardSpeed01Icon}
-                    size={12}
-                    strokeWidth={1.5}
-                    className={isInspecting ? 'text-amber-600' : 'text-accent-primary'}
-                  />
-                  <span>{isInspecting ? '118,400 mi (Rollback)' : '42,180 mi'}</span>
-                </span>
-                <span
-                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-[10px] font-bold shadow-xs transition-colors duration-200 ${
-                    isInspecting
-                      ? 'bg-rose-50 border-rose-300 text-rose-700'
-                      : 'bg-white/95 border-[#D5E4F0] text-theme-primary'
-                  }`}
-                >
-                  <HugeiconsIcon
-                    icon={isInspecting ? Alert01Icon : CheckmarkCircle02Icon}
-                    size={12}
-                    strokeWidth={1.5}
-                    className={isInspecting ? 'text-rose-600' : 'text-emerald-500'}
-                  />
-                  <span>{isInspecting ? '2 Accidents Reported' : '0 Accidents'}</span>
-                </span>
-              </div>
-
-              {/* Mobile Touch Inspection Prompt */}
-              <div className="flex sm:hidden items-center justify-center pt-2 text-[11px] font-medium text-theme-subtle">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-theme-card/85 border border-theme-subtle shadow-2xs">
-                  <span className="w-1.5 h-1.5 rounded-full bg-accent-primary animate-pulse" />
-                  <span>Touch & drag car to scan hidden records</span>
-                </span>
-              </div>
             </div>
           </Reveal>
 

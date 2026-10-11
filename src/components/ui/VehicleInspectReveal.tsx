@@ -19,6 +19,16 @@ export const VehicleInspectReveal: React.FC<VehicleInspectRevealProps> = ({
   className = ''
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(typeof window !== 'undefined' && window.innerWidth >= 1024);
+    };
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
 
   // Target coordinates from mouse / touch
   const targetRef = useRef<{ x: number | null; y: number | null }>({
@@ -38,8 +48,10 @@ export const VehicleInspectReveal: React.FC<VehicleInspectRevealProps> = ({
     y: null
   });
 
-  // 0.1 lerp loop in requestAnimationFrame with cleanup on unmount
+  // 0.1 lerp loop in requestAnimationFrame with cleanup on unmount (Desktop only)
   useEffect(() => {
+    if (!isDesktop) return;
+
     let animId: number;
 
     const animate = () => {
@@ -48,7 +60,6 @@ export const VehicleInspectReveal: React.FC<VehicleInspectRevealProps> = ({
 
       if (target.x !== null && target.y !== null) {
         if (current.x === null || current.y === null) {
-          // Snap instantly on first cursor entry so the full circle appears immediately without lag
           current.x = target.x;
           current.y = target.y;
           setEasedCursor({ x: current.x, y: current.y });
@@ -78,38 +89,35 @@ export const VehicleInspectReveal: React.FC<VehicleInspectRevealProps> = ({
     return () => {
       cancelAnimationFrame(animId);
     };
-  }, []);
+  }, [isDesktop]);
 
   const updateTarget = useCallback((clientX: number, clientY: number) => {
-    if (!containerRef.current) return;
+    if (!isDesktop || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
     const y = Math.max(0, Math.min(clientY - rect.top, rect.height));
 
     targetRef.current = { x, y };
     onInspectChange?.(true);
-  }, [onInspectChange]);
+  }, [isDesktop, onInspectChange]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    updateTarget(e.clientX, e.clientY);
-  }, [updateTarget]);
+    if (isDesktop) updateTarget(e.clientX, e.clientY);
+  }, [isDesktop, updateTarget]);
 
   const handleMouseEnter = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    updateTarget(e.clientX, e.clientY);
-  }, [updateTarget]);
+    if (isDesktop) updateTarget(e.clientX, e.clientY);
+  }, [isDesktop, updateTarget]);
 
   const handleMouseLeave = useCallback(() => {
+    if (!isDesktop) return;
     targetRef.current = { x: null, y: null };
     onInspectChange?.(false);
-  }, [onInspectChange]);
+  }, [isDesktop, onInspectChange]);
 
-  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    if (!e.touches[0]) return;
-    updateTarget(e.touches[0].clientX, e.touches[0].clientY);
-  }, [updateTarget]);
-
-  // Sync external inspection trigger
+  // Sync external inspection trigger (Desktop only)
   useEffect(() => {
+    if (!isDesktop) return;
     if (isInspecting && targetRef.current.x === null && containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
       targetRef.current = {
@@ -121,7 +129,7 @@ export const VehicleInspectReveal: React.FC<VehicleInspectRevealProps> = ({
         targetRef.current = { x: null, y: null };
       }
     }
-  }, [isInspecting]);
+  }, [isDesktop, isInspecting]);
 
   return (
     <div
@@ -129,33 +137,27 @@ export const VehicleInspectReveal: React.FC<VehicleInspectRevealProps> = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
-      onTouchStart={(e) => {
-        if (e.touches[0]) updateTarget(e.touches[0].clientX, e.touches[0].clientY);
-      }}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={() => {
-        targetRef.current = { x: null, y: null };
-        onInspectChange?.(false);
-      }}
-      className={`relative select-none cursor-crosshair group overflow-visible ${className}`}
+      className={`relative select-none lg:cursor-crosshair lg:group overflow-visible ${className}`}
     >
-      {/* Main Image Container with Physical Hovering Levitation */}
-      <div className="relative w-full overflow-visible drop-shadow-2xl rounded-2xl bg-transparent min-h-[260px] sm:min-h-[320px] flex items-center justify-center animate-float-car">
+      {/* Main Image Container: Floating hover effect only on desktop (lg:animate-float-car) */}
+      <div className="relative w-full overflow-visible drop-shadow-xl lg:drop-shadow-2xl rounded-2xl bg-transparent min-h-0 lg:min-h-[320px] flex items-center justify-center lg:animate-float-car">
         {/* Base Clean Car (Transparent PNG) */}
         <img
           src={cleanSrc}
           alt={alt}
-          className="w-full h-auto object-contain block transition-transform duration-500 group-hover:scale-[1.01] drop-shadow-xl"
+          className="w-full h-auto object-contain block transition-transform duration-500 lg:group-hover:scale-[1.01] drop-shadow-xl"
           loading="eager"
         />
 
-        {/* RevealLayer Spotlight with 0.1 lerp eased cursor */}
-        <RevealLayer
-          image={damagedSrc}
-          cursorX={easedCursor.x}
-          cursorY={easedCursor.y}
-          spotlightRadius={160}
-        />
+        {/* RevealLayer Spotlight: Desktop only */}
+        {isDesktop && (
+          <RevealLayer
+            image={damagedSrc}
+            cursorX={easedCursor.x}
+            cursorY={easedCursor.y}
+            spotlightRadius={160}
+          />
+        )}
       </div>
     </div>
   );
