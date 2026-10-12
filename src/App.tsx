@@ -108,6 +108,7 @@ export function App() {
         <Header
           onQuickCheckClick={handleQuickCheckClick}
           onAuthClick={() => setCurrentView('auth')}
+          onSearchVin={handleSearchVin}
           currentUser={currentUser}
         />
       </div>

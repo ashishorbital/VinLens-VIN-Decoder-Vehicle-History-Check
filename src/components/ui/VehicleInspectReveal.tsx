@@ -266,14 +266,6 @@ export const VehicleInspectReveal: React.FC<VehicleInspectRevealProps> = ({
           spotlightRadius={spotlightRadius}
         />
       </div>
-
-      {/* Mobile-Only Interactive Hint Badge (strictly hidden on desktop) */}
-      <div className="lg:hidden mt-2.5 flex items-center justify-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-theme-secondary/80 border border-theme-subtle text-[11px] font-semibold text-theme-muted shadow-2xs backdrop-blur-xs select-none">
-          <span className="w-1.5 h-1.5 rounded-full bg-accent-primary animate-pulse" />
-          <span>Auto-Scanning Damage • Drag to inspect</span>
-        </div>
-      </div>
     </div>
   );
 };

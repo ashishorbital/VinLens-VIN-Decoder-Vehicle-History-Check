@@ -58,19 +58,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   }, []);
 
   return (
-    <section id="hero-search" className="relative pt-4 sm:pt-6 md:pt-8 pb-16 md:pb-24 overflow-hidden bg-theme-secondary/40 transition-colors duration-200 scroll-mt-20">
+    <section id="hero-search" className="relative pt-2 sm:pt-4 md:pt-8 pb-10 sm:pb-16 md:pb-24 overflow-hidden bg-theme-secondary/40 transition-colors duration-200 scroll-mt-20">
       {/* Background subtle radial gradient */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-accent-primary/5 rounded-full blur-3xl pointer-events-none" />
 
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-6 lg:gap-y-6 lg:gap-x-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-2 sm:gap-y-4 lg:gap-y-6 lg:gap-x-8 items-center">
           {/* 1. Headline & Subtitle: Mobile 1st, Desktop Left Column (Top) */}
           <Reveal direction="up" distance={16} duration={600} className="order-1 lg:order-none lg:col-span-7">
-            <div className="space-y-4 sm:space-y-6 text-left">
+            <div className="space-y-1.5 sm:space-y-3 lg:space-y-6 text-left">
               {/* Headline with typing animation */}
               <h1 
                 aria-label="See Beyond the Showroom Shine."
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-[46px] font-heading font-bold tracking-tight text-theme-primary leading-[1.12]"
+                className="text-2xl sm:text-4xl md:text-5xl lg:text-[46px] font-heading font-bold tracking-tight text-theme-primary leading-[1.14] sm:leading-[1.12]"
               >
                 See Beyond the{' '}
                 <span className="text-accent-primary">
@@ -79,7 +79,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </h1>
 
               {/* Supporting Text */}
-              <p className="text-base sm:text-lg text-theme-muted max-w-2xl leading-relaxed">
+              <p className="text-sm sm:text-base lg:text-lg text-theme-muted max-w-2xl leading-normal sm:leading-relaxed">
                 Explore a car's available history before you commit, with insights into reported accidents, mileage, and ownership.
               </p>
             </div>
@@ -87,7 +87,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* 2. Right Column (Desktop): Hero Vehicle with Floating Diagnostic Badges & Tech Glow (Desktop Right, Mobile 2nd) */}
           <Reveal direction="up" distance={16} delay={60} duration={650} className="order-2 lg:order-none lg:col-span-5 lg:row-span-2 relative flex justify-center items-center overflow-visible self-center">
-            <div className="relative w-full max-w-lg lg:max-w-none overflow-visible py-2 sm:py-6">
+            <div className="relative w-full max-w-[270px] sm:max-w-md lg:max-w-none overflow-visible py-0 lg:py-6 mx-auto">
               {/* Soft Tech Radial Glow Backdrop - Desktop Only */}
               <div 
                 className={`hidden lg:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[115%] h-[115%] max-w-[540px] max-h-[540px] rounded-full blur-3xl pointer-events-none -z-10 transition-colors duration-500 ${
@@ -237,9 +237,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* 3. Search Form & Social Proof: Mobile 3rd, Desktop Left Column (Bottom) */}
           <Reveal direction="up" distance={16} delay={120} duration={600} className="order-3 lg:order-none lg:col-span-7">
-            <div className="space-y-6 text-left">
+            <div className="space-y-3 sm:space-y-4 lg:space-y-6 text-left">
               {/* VIN Lookup Form */}
-              <div id="first-search-bar" className="pt-1 scroll-mt-28">
+              <div id="first-search-bar" className="pt-0 sm:pt-1 scroll-mt-28">
                 <VinLookupForm
                   variant="hero"
                   onSearch={onSearchVin}

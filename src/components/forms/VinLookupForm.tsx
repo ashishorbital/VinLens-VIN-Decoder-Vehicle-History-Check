@@ -238,7 +238,7 @@ export const VinLookupForm: React.FC<VinLookupFormProps> = ({
   return (
     <div className={`w-full ${className}`}>
       {/* Tactile 3D Search Mode Tab Switcher */}
-      <div className="flex items-center justify-center mb-3">
+      <div className="flex items-center justify-center mb-2 sm:mb-3">
         <div className="inline-flex items-center p-1 rounded-2xl bg-theme-card/95 border border-theme-subtle shadow-[inset_0_1.5px_3px_rgba(15,23,42,0.06),0_2px_8px_rgba(0,152,187,0.06)] backdrop-blur-md">
           <button
             type="button"
@@ -266,7 +266,7 @@ export const VinLookupForm: React.FC<VinLookupFormProps> = ({
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="w-full space-y-2.5 relative group">
+      <form onSubmit={handleSubmit} className="w-full space-y-2 sm:space-y-2.5 relative group">
         {/* Atmospheric Cyan Depth Glow Halo to attract instant attention */}
         <div 
           className="absolute -inset-1 sm:-inset-1.5 bg-gradient-to-r from-accent-primary/25 via-cyan-400/20 to-accent-primary/25 rounded-3xl blur-xl opacity-70 pointer-events-none group-hover:opacity-100 transition-opacity duration-300" 
@@ -421,7 +421,7 @@ export const VinLookupForm: React.FC<VinLookupFormProps> = ({
             variant="primary"
             size={isHero ? 'lg' : 'md'}
             disabled={isSubmitting}
-            className="sm:w-auto shrink-0 font-heading font-bold uppercase tracking-wider gap-2.5 btn-cta-3d text-sm sm:text-base px-7 py-3.5 sm:py-4 rounded-xl cursor-pointer select-none"
+            className="sm:w-auto shrink-0 font-heading font-bold uppercase tracking-wider gap-2.5 btn-cta-3d text-sm sm:text-base px-7 py-3 sm:py-4 rounded-xl cursor-pointer select-none"
           >
             {isSubmitting ? (
               <span className="flex items-center gap-2">
