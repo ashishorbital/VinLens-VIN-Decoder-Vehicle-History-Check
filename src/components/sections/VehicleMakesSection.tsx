@@ -31,11 +31,13 @@ export const VehicleMakesSection: React.FC<VehicleMakesSectionProps> = ({
     onSelectMakeVin(make.sampleVin, make.name);
   };
 
-  // Split 32 makes evenly for the dual opposing mobile marquees (16 in each row, duplicated for seamless loop)
-  const row1Makes = SUPPORTED_MAKES.slice(0, 16);
-  const row2Makes = SUPPORTED_MAKES.slice(16, 32);
-  const marqueeRow1 = [...row1Makes, ...row1Makes];
-  const marqueeRow2 = [...row2Makes, ...row2Makes];
+  // Split 32 makes evenly across 4 opposing mobile marquees (8 makes per row, duplicated for seamless loop)
+  const marqueeRows = [
+    { id: 'r1', makes: [...SUPPORTED_MAKES.slice(0, 8), ...SUPPORTED_MAKES.slice(0, 8)], animation: 'animate-marquee-slow' },
+    { id: 'r2', makes: [...SUPPORTED_MAKES.slice(8, 16), ...SUPPORTED_MAKES.slice(8, 16)], animation: 'animate-marquee-reverse' },
+    { id: 'r3', makes: [...SUPPORTED_MAKES.slice(16, 24), ...SUPPORTED_MAKES.slice(16, 24)], animation: 'animate-marquee-slow' },
+    { id: 'r4', makes: [...SUPPORTED_MAKES.slice(24, 32), ...SUPPORTED_MAKES.slice(24, 32)], animation: 'animate-marquee-reverse' }
+  ];
 
   return (
     <section id="makes" className="py-16 md:py-24 bg-theme-main transition-colors duration-200">
@@ -52,8 +54,8 @@ export const VehicleMakesSection: React.FC<VehicleMakesSectionProps> = ({
           </div>
         </Reveal>
 
-        {/* 1. Mobile & Tablet Dual-Row Opposing Marquee (< 1024px; Desktop grid untouched) */}
-        <div className="lg:hidden space-y-3.5 relative overflow-hidden py-2">
+        {/* 1. Mobile & Tablet 4-Row Opposing Marquee (< 1024px; Desktop grid untouched) */}
+        <div className="lg:hidden space-y-2.5 relative overflow-hidden py-1">
           {/* Edge Gradient Fade Masks */}
           <div
             className="absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-r from-theme-main via-theme-main/80 to-transparent z-10 pointer-events-none"
@@ -64,67 +66,37 @@ export const VehicleMakesSection: React.FC<VehicleMakesSectionProps> = ({
             aria-hidden="true"
           />
 
-          {/* Row 1: Moves Left */}
-          <div className="relative w-full overflow-hidden flex items-center">
-            <div className="animate-marquee-slow flex items-center gap-3 py-1">
-              {marqueeRow1.map((make, idx) => {
-                const isSelected = selectedMake?.name === make.name;
-                return (
-                  <button
-                    key={`r1-${make.name}-${idx}`}
-                    type="button"
-                    onClick={() => handleMakeClick(make)}
-                    className={`w-[170px] sm:w-[190px] shrink-0 p-3 sm:p-3.5 rounded-2xl border transition-all duration-300 text-left flex items-center gap-2.5 group cursor-pointer relative overflow-hidden select-none active:scale-95 ${
-                      isSelected
-                        ? 'bg-accent-primary/10 border-accent-primary shadow-[0_8px_20px_rgba(0,152,187,0.18)] ring-1 ring-accent-primary'
-                        : 'bg-theme-card/95 backdrop-blur-md border-theme-subtle hover:border-[#0098BB]/50 shadow-xs'
-                    }`}
-                  >
-                    <BrandLogo makeName={make.name} size="md" />
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs sm:text-sm font-bold text-theme-primary group-hover:text-accent-primary transition-colors truncate">
-                        {make.name}
+          {marqueeRows.map(row => (
+            <div key={row.id} className="relative w-full overflow-hidden flex items-center">
+              <div className={`${row.animation} flex items-center gap-3 py-0.5`}>
+                {row.makes.map((make, idx) => {
+                  const isSelected = selectedMake?.name === make.name;
+                  return (
+                    <button
+                      key={`${row.id}-${make.name}-${idx}`}
+                      type="button"
+                      onClick={() => handleMakeClick(make)}
+                      className={`w-[160px] sm:w-[180px] shrink-0 p-2.5 sm:p-3 rounded-2xl border transition-all duration-300 text-left flex items-center gap-2.5 group cursor-pointer relative overflow-hidden select-none active:scale-95 ${
+                        isSelected
+                          ? 'bg-accent-primary/10 border-accent-primary shadow-[0_8px_20px_rgba(0,152,187,0.18)] ring-1 ring-accent-primary'
+                          : 'bg-theme-card/95 backdrop-blur-md border-theme-subtle hover:border-[#0098BB]/50 shadow-xs'
+                      }`}
+                    >
+                      <BrandLogo makeName={make.name} size="md" />
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs sm:text-sm font-bold text-theme-primary group-hover:text-accent-primary transition-colors truncate">
+                          {make.name}
+                        </div>
+                        <div className="text-[10px] sm:text-[11px] text-theme-muted font-medium truncate">
+                          {make.country}
+                        </div>
                       </div>
-                      <div className="text-[10px] sm:text-[11px] text-theme-muted font-medium truncate">
-                        {make.country}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-
-          {/* Row 2: Moves Right */}
-          <div className="relative w-full overflow-hidden flex items-center">
-            <div className="animate-marquee-reverse flex items-center gap-3 py-1">
-              {marqueeRow2.map((make, idx) => {
-                const isSelected = selectedMake?.name === make.name;
-                return (
-                  <button
-                    key={`r2-${make.name}-${idx}`}
-                    type="button"
-                    onClick={() => handleMakeClick(make)}
-                    className={`w-[170px] sm:w-[190px] shrink-0 p-3 sm:p-3.5 rounded-2xl border transition-all duration-300 text-left flex items-center gap-2.5 group cursor-pointer relative overflow-hidden select-none active:scale-95 ${
-                      isSelected
-                        ? 'bg-accent-primary/10 border-accent-primary shadow-[0_8px_20px_rgba(0,152,187,0.18)] ring-1 ring-accent-primary'
-                        : 'bg-theme-card/95 backdrop-blur-md border-theme-subtle hover:border-[#0098BB]/50 shadow-xs'
-                    }`}
-                  >
-                    <BrandLogo makeName={make.name} size="md" />
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs sm:text-sm font-bold text-theme-primary group-hover:text-accent-primary transition-colors truncate">
-                        {make.name}
-                      </div>
-                      <div className="text-[10px] sm:text-[11px] text-theme-muted font-medium truncate">
-                        {make.country}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* 2. Desktop View: Search/Filters + 8x4 Grid (Untouched, lg and above) */}
