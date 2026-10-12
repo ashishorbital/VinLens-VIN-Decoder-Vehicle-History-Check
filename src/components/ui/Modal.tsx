@@ -68,7 +68,7 @@ export const Modal: React.FC<ModalProps> = ({
         className={`relative w-full ${maxWidthClasses} bg-theme-card border border-theme-subtle rounded-2xl shadow-2xl overflow-hidden z-10 my-auto transform transition-all max-h-[92vh] flex flex-col print:border-none print:shadow-none print:rounded-none print:max-h-none print:overflow-visible print:static print:w-full print:max-w-none print:m-0 print:p-0`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-theme-subtle bg-theme-card-subtle shrink-0 print:hidden">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-theme-subtle bg-theme-card-subtle shrink-0 print:hidden">
           <div role="heading" aria-level={2} className="text-base sm:text-lg md:text-xl font-heading font-semibold text-theme-primary flex items-center">
             {title || 'VinLens'}
           </div>
@@ -82,7 +82,7 @@ export const Modal: React.FC<ModalProps> = ({
         </div>
 
         {/* Scrollable Body */}
-        <div className="p-6 overflow-y-auto print:p-0 print:overflow-visible print:block">
+        <div className="p-4 sm:p-6 overflow-y-auto print:p-0 print:overflow-visible print:block">
           {children}
         </div>
       </div>

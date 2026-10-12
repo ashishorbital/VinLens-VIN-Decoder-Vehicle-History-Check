@@ -773,9 +773,9 @@ export const VinReportModal: React.FC<VinReportModalProps> = ({
         {/* Tab 4: Mileage Records */}
         {activeTab === 'mileage' && (
           <div className="space-y-4 animate-in fade-in duration-200">
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-theme-secondary via-theme-card to-theme-secondary border border-theme-subtle flex items-center justify-between gap-3 text-xs shadow-xs">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 shrink-0">
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-theme-secondary via-theme-card to-theme-secondary border border-theme-subtle flex items-start sm:items-center justify-between gap-3 text-xs shadow-xs">
+              <div className="flex items-start sm:items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 shrink-0 mt-0.5 sm:mt-0">
                   <HugeiconsIcon icon={DashboardSpeed01Icon} size={20} strokeWidth={1.8} />
                 </div>
                 <div>
@@ -793,35 +793,98 @@ export const VinReportModal: React.FC<VinReportModalProps> = ({
               </span>
             </div>
 
-            <div className="border border-theme-subtle rounded-2xl overflow-hidden bg-theme-card shadow-xs">
-              <table className="w-full text-left text-xs sm:text-sm font-data">
-                <thead className="bg-theme-secondary/80 text-theme-muted font-bold border-b border-theme-subtle text-[11px] uppercase tracking-wider">
-                  <tr>
-                    <th className="p-3.5 sm:px-4">Audit Date</th>
-                    <th className="p-3.5 sm:px-4">Reported Mileage</th>
-                    <th className="p-3.5 sm:px-4">Reporting Facility / Source</th>
-                    <th className="p-3.5 sm:px-4 text-right">Verification</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-theme-subtle font-normal">
-                  {report.mileageHistory.map((item, idx) => (
-                    <tr key={idx} className="hover:bg-theme-secondary/40 transition-colors">
-                      <td className="p-3.5 sm:px-4 font-medium text-theme-primary">{item.date}</td>
-                      <td className="p-3.5 sm:px-4 font-mono font-bold text-accent-primary">
-                        {item.mileage.toLocaleString()} mi
-                      </td>
-                      <td className="p-3.5 sm:px-4 text-theme-muted">{item.source}</td>
-                      <td className="p-3.5 sm:px-4 text-right">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                          <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} />
-                          <span>Verified</span>
+            {/* 1. Mobile Milestone Cards View (Rendered directly on small screens) */}
+            <div className="sm:hidden space-y-3">
+              {report.mileageHistory.map((item, idx) => {
+                const prevItem = idx > 0 ? report.mileageHistory[idx - 1] : null;
+                const diff = prevItem ? item.mileage - prevItem.mileage : null;
+
+                return (
+                  <div
+                    key={idx}
+                    className="p-4 rounded-2xl border border-theme-subtle bg-theme-card shadow-xs space-y-2.5 hover:border-[#0098BB]/40 transition-all"
+                  >
+                    <div className="flex items-center justify-between border-b border-theme-subtle/60 pb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-md bg-accent-primary/10 text-accent-primary text-[10px] font-bold font-mono flex items-center justify-center border border-accent-primary/20">
+                          #{idx + 1}
                         </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        <span className="font-semibold text-xs text-theme-primary">
+                          {item.date}
+                        </span>
+                      </div>
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                        <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} />
+                        <span>Verified</span>
+                      </span>
+                    </div>
+
+                    <div className="flex items-baseline justify-between pt-0.5">
+                      <div>
+                        <div className="text-[10px] text-theme-muted uppercase tracking-wider font-semibold">
+                          Reported Mileage
+                        </div>
+                        <div className="text-lg font-mono font-bold text-accent-primary">
+                          {item.mileage.toLocaleString()} mi
+                        </div>
+                      </div>
+                      {diff !== null && diff > 0 && (
+                        <div className="text-right">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-theme-secondary text-theme-muted border border-theme-subtle">
+                            +{diff.toLocaleString()} mi
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-2 border-t border-theme-subtle/60 text-xs flex items-center justify-between gap-2">
+                      <span className="text-theme-muted text-[11px]">Reporting Facility:</span>
+                      <span className="font-medium text-theme-primary text-right truncate max-w-[65%]">
+                        {item.source}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
+
+            {/* 2. Full Table View (Rendered on tablet and desktop screens) */}
+            <div className="hidden sm:block border border-theme-subtle rounded-2xl overflow-hidden bg-theme-card shadow-xs">
+              <div className="overflow-x-auto scrollbar-thin">
+                <table className="w-full text-left text-xs sm:text-sm font-data">
+                  <thead className="bg-theme-secondary/80 text-theme-muted font-bold border-b border-theme-subtle text-[11px] uppercase tracking-wider">
+                    <tr>
+                      <th className="p-3.5 sm:px-4 whitespace-nowrap">Audit Date</th>
+                      <th className="p-3.5 sm:px-4 whitespace-nowrap">Reported Mileage</th>
+                      <th className="p-3.5 sm:px-4">Reporting Facility / Source</th>
+                      <th className="p-3.5 sm:px-4 text-right whitespace-nowrap">Verification</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-theme-subtle font-normal">
+                    {report.mileageHistory.map((item, idx) => (
+                      <tr key={idx} className="hover:bg-theme-secondary/40 transition-colors">
+                        <td className="p-3.5 sm:px-4 font-medium text-theme-primary whitespace-nowrap">
+                          {item.date}
+                        </td>
+                        <td className="p-3.5 sm:px-4 font-mono font-bold text-accent-primary whitespace-nowrap">
+                          {item.mileage.toLocaleString()} mi
+                        </td>
+                        <td className="p-3.5 sm:px-4 text-theme-muted">
+                          {item.source}
+                        </td>
+                        <td className="p-3.5 sm:px-4 text-right whitespace-nowrap">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} />
+                            <span>Verified</span>
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
         )}
 
