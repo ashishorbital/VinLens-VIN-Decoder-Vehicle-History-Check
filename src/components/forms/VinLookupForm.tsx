@@ -170,25 +170,14 @@ export const VinLookupForm: React.FC<VinLookupFormProps> = ({
   const [vinInput, setVinInput] = useState('');
   const [vinTouched, setVinTouched] = useState(false);
 
-  // Responsive mobile check for placeholder fit
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 639px)');
-    setIsMobile(mediaQuery.matches);
-
-    const handler = (e: MediaQueryListEvent) => {
-      setIsMobile(e.matches);
-    };
-
-    mediaQuery.addEventListener('change', handler);
-    return () => mediaQuery.removeEventListener('change', handler);
-  }, []);
-
   // License Plate state
   const [plateInput, setPlateInput] = useState('');
   const [stateInput, setStateInput] = useState('California');
   const [plateTouched, setPlateTouched] = useState(false);
+
+  // Focus states for animated placeholder marquee
+  const [isVinFocused, setIsVinFocused] = useState(false);
+  const [isPlateFocused, setIsPlateFocused] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -248,44 +237,44 @@ export const VinLookupForm: React.FC<VinLookupFormProps> = ({
 
   return (
     <div className={`w-full ${className}`}>
-      {/* Search Mode Tab Switcher */}
-      <div className="flex items-center justify-center mb-2.5">
-        <div className="inline-flex items-center rounded-xl bg-theme-card/90 p-1 border border-theme-subtle shadow-xs">
+      {/* Tactile 3D Search Mode Tab Switcher */}
+      <div className="flex items-center justify-center mb-3">
+        <div className="inline-flex items-center p-1 rounded-2xl bg-theme-card/95 border border-theme-subtle shadow-[inset_0_1.5px_3px_rgba(15,23,42,0.06),0_2px_8px_rgba(0,152,187,0.06)] backdrop-blur-md">
           <button
             type="button"
             onClick={() => setSearchMode('vin')}
-            className={`relative px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+            className={`relative px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
               searchMode === 'vin'
-                ? 'bg-theme-primary text-theme-inverted shadow-xs font-bold'
-                : 'text-theme-muted hover:text-theme-primary hover:bg-theme-secondary/80'
+                ? 'bg-gradient-to-b from-[#1E2638] to-[#121824] text-white shadow-[0_3px_10px_rgba(15,23,42,0.22),inset_0_1px_0_rgba(255,255,255,0.2)]'
+                : 'text-theme-muted hover:text-theme-primary'
             }`}
           >
             <span>by VIN</span>
-            {searchMode === 'vin' && (
-              <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-[6px] border-t-theme-primary pointer-events-none" />
-            )}
           </button>
 
           <button
             type="button"
             onClick={() => setSearchMode('plate')}
-            className={`relative px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+            className={`relative px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
               searchMode === 'plate'
-                ? 'bg-theme-primary text-theme-inverted shadow-xs font-bold'
-                : 'text-theme-muted hover:text-theme-primary hover:bg-theme-secondary/80'
+                ? 'bg-gradient-to-b from-[#1E2638] to-[#121824] text-white shadow-[0_3px_10px_rgba(15,23,42,0.22),inset_0_1px_0_rgba(255,255,255,0.2)]'
+                : 'text-theme-muted hover:text-theme-primary'
             }`}
           >
             <span>by US License Plate</span>
-            {searchMode === 'plate' && (
-              <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-[6px] border-t-theme-primary pointer-events-none" />
-            )}
           </button>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="w-full space-y-2.5">
-        {/* Preserved Search Bar 3D Container */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-2xl search-bar-3d">
+      <form onSubmit={handleSubmit} className="w-full space-y-2.5 relative group">
+        {/* Atmospheric Cyan Depth Glow Halo to attract instant attention */}
+        <div 
+          className="absolute -inset-1 sm:-inset-1.5 bg-gradient-to-r from-accent-primary/25 via-cyan-400/20 to-accent-primary/25 rounded-3xl blur-xl opacity-70 pointer-events-none group-hover:opacity-100 transition-opacity duration-300" 
+          aria-hidden="true" 
+        />
+
+        {/* Tactile 3D Search Bar Floating Slab */}
+        <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-2xl search-bar-3d">
           {searchMode === 'plate' ? (
             /* License Plate Input Mode */
             <div className="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center min-w-0">
@@ -296,13 +285,48 @@ export const VinLookupForm: React.FC<VinLookupFormProps> = ({
                   type="text"
                   value={plateInput}
                   onChange={handlePlateChange}
+                  onFocus={() => setIsPlateFocused(true)}
+                  onBlur={() => setIsPlateFocused(false)}
                   maxLength={8}
-                  placeholder="License Plate"
                   aria-label="License Plate"
                   autoComplete="off"
                   spellCheck={false}
-                  className="w-full pl-3 sm:pl-4 pr-3 py-3 sm:py-3.5 text-base sm:text-lg font-mono font-medium tracking-wider bg-transparent text-theme-primary placeholder:text-theme-subtle placeholder:font-sans placeholder:tracking-normal focus:outline-none uppercase"
+                  className="w-full pl-3 sm:pl-4 pr-3 py-3 sm:py-3.5 text-base sm:text-lg font-mono font-medium tracking-wider bg-transparent text-theme-primary focus:outline-none uppercase relative z-10"
                 />
+
+                {/* Animated Marquee Placeholder (both screens) */}
+                {!plateInput && (
+                  <div
+                    className={`absolute inset-y-0 left-3 sm:left-4 right-3 flex items-center overflow-hidden pointer-events-none select-none marquee-mask transition-opacity duration-200 ${
+                      isPlateFocused ? 'opacity-25' : 'opacity-75'
+                    }`}
+                  >
+                    <div className="animate-placeholder-marquee flex shrink-0 items-center">
+                      {/* Set 1 */}
+                      <div className="flex shrink-0 items-center gap-6 pr-6">
+                        <span className="text-xs sm:text-sm font-sans font-semibold tracking-wider text-theme-subtle uppercase">
+                          LICENSE PLATE
+                        </span>
+                        <span className="text-accent-primary/60 text-xs">✦</span>
+                        <span className="text-xs sm:text-sm font-sans font-semibold tracking-wider text-theme-subtle uppercase">
+                          LICENSE PLATE
+                        </span>
+                        <span className="text-accent-primary/60 text-xs">✦</span>
+                      </div>
+                      {/* Set 2 (Identical duplicate for seamless loop) */}
+                      <div className="flex shrink-0 items-center gap-6 pr-6" aria-hidden="true">
+                        <span className="text-xs sm:text-sm font-sans font-semibold tracking-wider text-theme-subtle uppercase">
+                          LICENSE PLATE
+                        </span>
+                        <span className="text-accent-primary/60 text-xs">✦</span>
+                        <span className="text-xs sm:text-sm font-sans font-semibold tracking-wider text-theme-subtle uppercase">
+                          LICENSE PLATE
+                        </span>
+                        <span className="text-accent-primary/60 text-xs">✦</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Thin Vertical Divider */}
@@ -318,28 +342,65 @@ export const VinLookupForm: React.FC<VinLookupFormProps> = ({
               />
             </div>
           ) : (
-            /* Preserved VIN Input Mode */
+            /* Preserved VIN Input Mode with 3D Search Badge */
             <div className="relative flex-1 flex items-center min-w-0">
-              <HugeiconsIcon
-                icon={Search01Icon}
-                size={20}
-                strokeWidth={1.5}
-                className="text-theme-muted ml-3 sm:ml-4 shrink-0 transition-colors"
-              />
+              <div className="w-9 h-9 sm:w-10 sm:h-10 ml-1.5 sm:ml-2 rounded-xl bg-accent-primary/10 border border-accent-primary/25 flex items-center justify-center text-accent-primary shrink-0 shadow-2xs z-20">
+                <HugeiconsIcon
+                  icon={Search01Icon}
+                  size={19}
+                  strokeWidth={1.8}
+                />
+              </div>
               <input
                 id={isHero ? 'vin-input-hero' : undefined}
                 type="text"
                 value={vinInput}
                 onChange={handleVinChange}
+                onFocus={() => setIsVinFocused(true)}
+                onBlur={() => setIsVinFocused(false)}
                 maxLength={17}
-                placeholder={isMobile ? 'Enter 17-Digit VIN' : 'Enter 17-character VIN Number'}
                 aria-label="Vehicle Identification Number"
                 autoComplete="off"
                 spellCheck={false}
-                className="w-full pl-3 pr-10 py-3 sm:py-3.5 text-base sm:text-lg font-mono font-medium tracking-wider bg-transparent text-theme-primary placeholder:text-theme-subtle placeholder:font-sans placeholder:tracking-normal focus:outline-none uppercase"
+                className="w-full pl-3 pr-10 py-3 sm:py-3.5 text-base sm:text-lg font-mono font-medium tracking-wider bg-transparent text-theme-primary focus:outline-none uppercase relative z-10"
               />
+
+              {/* Animated Marquee Placeholder (both screens) */}
+              {!vinInput && (
+                <div
+                  className={`absolute inset-y-0 left-[52px] sm:left-[60px] right-10 flex items-center overflow-hidden pointer-events-none select-none marquee-mask transition-opacity duration-200 ${
+                    isVinFocused ? 'opacity-25' : 'opacity-75'
+                  }`}
+                >
+                  <div className="animate-placeholder-marquee flex shrink-0 items-center">
+                    {/* Set 1 */}
+                    <div className="flex shrink-0 items-center gap-6 pr-6">
+                      <span className="text-xs sm:text-sm font-sans font-semibold tracking-wider text-theme-subtle uppercase">
+                        ENTER 17-CHARACTER VIN NUMBER
+                      </span>
+                      <span className="text-accent-primary/60 text-xs">✦</span>
+                      <span className="text-xs sm:text-sm font-sans font-semibold tracking-wider text-theme-subtle uppercase">
+                        ENTER 17-CHARACTER VIN NUMBER
+                      </span>
+                      <span className="text-accent-primary/60 text-xs">✦</span>
+                    </div>
+                    {/* Set 2 (Identical duplicate for seamless loop) */}
+                    <div className="flex shrink-0 items-center gap-6 pr-6" aria-hidden="true">
+                      <span className="text-xs sm:text-sm font-sans font-semibold tracking-wider text-theme-subtle uppercase">
+                        ENTER 17-CHARACTER VIN NUMBER
+                      </span>
+                      <span className="text-accent-primary/60 text-xs">✦</span>
+                      <span className="text-xs sm:text-sm font-sans font-semibold tracking-wider text-theme-subtle uppercase">
+                        ENTER 17-CHARACTER VIN NUMBER
+                      </span>
+                      <span className="text-accent-primary/60 text-xs">✦</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Realtime character badge */}
-              <div className="absolute right-2 flex items-center gap-1.5">
+              <div className="absolute right-2 flex items-center gap-1.5 z-20">
                 {vinValidation.isValid ? (
                   <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-600 border border-emerald-500/30 text-xs font-semibold shadow-2xs">
                     <HugeiconsIcon icon={CheckmarkCircle02Icon} size={15} strokeWidth={1.5} className="shrink-0" />
@@ -354,13 +415,13 @@ export const VinLookupForm: React.FC<VinLookupFormProps> = ({
             </div>
           )}
 
-          {/* Preserved Button Component with btn-cta-3d */}
+          {/* 3D Primary Button CTA */}
           <Button
             type="submit"
             variant="primary"
             size={isHero ? 'lg' : 'md'}
             disabled={isSubmitting}
-            className="sm:w-auto shrink-0 font-heading font-bold uppercase tracking-wide gap-2.5 btn-cta-3d text-sm sm:text-base px-6 py-3.5 rounded-xl cursor-pointer"
+            className="sm:w-auto shrink-0 font-heading font-bold uppercase tracking-wider gap-2.5 btn-cta-3d text-sm sm:text-base px-7 py-3.5 sm:py-4 rounded-xl cursor-pointer select-none"
           >
             {isSubmitting ? (
               <span className="flex items-center gap-2">

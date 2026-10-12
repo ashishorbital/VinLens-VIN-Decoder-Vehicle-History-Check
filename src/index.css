@@ -128,68 +128,72 @@
   transition: all 0.25s ease;
 }
 
-/* Mild 3D Search Bar - Tactile, Physical, Elevated Floating Slab */
+/* Tactile 3D Search Bar - Elevated Floating Slab with Crisp Highlight Bevels */
 .search-bar-3d {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F8FBFE 100%);
-  border: 1px solid #D1E1EE;
+  position: relative;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5F9FD 100%);
+  border: 1.5px solid #C4DCEF;
   box-shadow: 
     inset 0 1.5px 0 #FFFFFF,
-    0 1px 2px rgba(15, 23, 42, 0.04),
-    0 4px 8px -1px rgba(15, 23, 42, 0.06),
-    0 12px 28px -4px rgba(15, 23, 42, 0.09),
-    0 22px 46px -10px rgba(0, 152, 187, 0.12);
+    inset 0 -1.5px 2px rgba(0, 152, 187, 0.05),
+    0 2px 4px rgba(15, 23, 42, 0.04),
+    0 8px 18px -2px rgba(15, 23, 42, 0.07),
+    0 20px 42px -6px rgba(0, 152, 187, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.9);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .search-bar-3d:hover {
-  border-color: #BED6E8;
+  border-color: #92C6E8;
   box-shadow: 
     inset 0 1.5px 0 #FFFFFF,
-    0 2px 3px rgba(15, 23, 42, 0.05),
-    0 6px 12px -1px rgba(15, 23, 42, 0.07),
-    0 16px 36px -4px rgba(15, 23, 42, 0.11),
-    0 28px 56px -10px rgba(0, 152, 187, 0.16);
-  transform: translateY(-1.5px);
-}
-
-.search-bar-3d:focus-within {
-  border-color: var(--accent-primary);
-  box-shadow: 
-    inset 0 1.5px 0 #FFFFFF,
-    0 0 0 4px rgba(0, 152, 187, 0.16),
-    0 2px 4px rgba(15, 23, 42, 0.05),
-    0 8px 16px -2px rgba(15, 23, 42, 0.08),
-    0 20px 42px -4px rgba(15, 23, 42, 0.12),
-    0 32px 64px -10px rgba(0, 152, 187, 0.20);
+    inset 0 -1.5px 2px rgba(0, 152, 187, 0.07),
+    0 4px 8px rgba(15, 23, 42, 0.05),
+    0 12px 26px -3px rgba(15, 23, 42, 0.09),
+    0 28px 54px -8px rgba(0, 152, 187, 0.24),
+    0 0 0 1px rgba(0, 152, 187, 0.25);
   transform: translateY(-2px);
 }
 
-/* Mild 3D Primary Button CTA */
-.btn-cta-3d {
-  background: linear-gradient(180deg, #00A3C7 0%, #0084A3 100%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+.search-bar-3d:focus-within {
+  border-color: #0098BB;
+  background: #FFFFFF;
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.38),
-    0 2px 4px rgba(0, 152, 187, 0.25),
+    inset 0 2px 0 #FFFFFF,
+    0 0 0 4px rgba(0, 152, 187, 0.18),
+    0 4px 8px rgba(15, 23, 42, 0.05),
+    0 16px 36px -4px rgba(15, 23, 42, 0.11),
+    0 32px 64px -8px rgba(0, 152, 187, 0.28);
+  transform: translateY(-2.5px);
+}
+
+/* Tactile 3D Primary Button CTA with Physical Bevel & Press Down */
+.btn-cta-3d {
+  background: linear-gradient(180deg, #02AFD6 0%, #008AA9 100%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.45),
+    0 3.5px 0 #006D87,
     0 6px 18px rgba(0, 152, 187, 0.35);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-cta-3d:hover {
-  background: linear-gradient(180deg, #05ACD2 0%, #007D9B 100%);
+  background: linear-gradient(180deg, #07BEE7 0%, #0082A1 100%);
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.48),
-    0 3px 6px rgba(0, 152, 187, 0.28),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.55),
+    0 4px 0 #006D87,
     0 8px 24px rgba(0, 152, 187, 0.45);
-  transform: translateY(-1px);
+  transform: translateY(-1.5px);
 }
 
 .btn-cta-3d:active {
-  background: linear-gradient(180deg, #0084A3 0%, #00728D 100%);
+  background: linear-gradient(180deg, #008AA9 0%, #007691 100%);
   box-shadow: 
-    inset 0 2px 4px rgba(0, 0, 0, 0.2),
-    0 2px 6px rgba(0, 152, 187, 0.2);
-  transform: translateY(1px);
+    inset 0 2px 4px rgba(0, 0, 0, 0.25),
+    0 1px 0 #006D87,
+    0 3px 8px rgba(0, 152, 187, 0.25);
+  transform: translateY(2px);
 }
 
 .header-blur {
@@ -281,6 +285,28 @@
 .animate-marquee-reverse:hover,
 .animate-marquee-reverse:active {
   animation-play-state: paused;
+}
+
+/* Animated Search Bar Placeholder Marquee */
+@keyframes placeholder-marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-placeholder-marquee {
+  display: flex;
+  width: max-content;
+  animation: placeholder-marquee 14s linear infinite;
+  will-change: transform;
+}
+
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent);
 }
 
 /* Custom scrollbars */
