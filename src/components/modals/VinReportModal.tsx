@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Modal } from '../ui/Modal';
 import { getMockReportByVin } from '../../data/mockReport';
 import { BrandLogo } from '../ui/BrandLogo';
 import { HugeiconsIcon } from '@hugeicons/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   SecurityCheckIcon,
   CheckmarkCircle02Icon,
@@ -34,6 +35,26 @@ export const VinReportModal: React.FC<VinReportModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'accident' | 'ownership' | 'mileage' | 'title'>('overview');
   const [copiedVin, setCopiedVin] = useState(false);
+  const tabScrollRef = useRef<HTMLDivElement>(null);
+  const tabButtonRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
+
+  const centerTab = (tabId: string, smooth: boolean = true) => {
+    const container = tabScrollRef.current;
+    const buttonEl = tabButtonRefs.current[tabId];
+    if (!container || !buttonEl) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const buttonRect = buttonEl.getBoundingClientRect();
+
+    const buttonCenter = buttonRect.left + buttonRect.width / 2;
+    const containerCenter = containerRect.left + containerRect.width / 2;
+    const diff = buttonCenter - containerCenter;
+
+    container.scrollBy({
+      left: diff,
+      behavior: smooth ? 'smooth' : 'auto'
+    });
+  };
 
   const report = getMockReportByVin(vin);
 
@@ -71,6 +92,34 @@ export const VinReportModal: React.FC<VinReportModalProps> = ({
       badge: report.titleStatus
     }
   ];
+
+  const currentTabIndex = tabs.findIndex(t => t.id === activeTab);
+
+  useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => {
+        centerTab(activeTab, false);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, activeTab]);
+
+  const handleScrollTabs = (direction: 'left' | 'right') => {
+    if (direction === 'left' && currentTabIndex > 0) {
+      const prevTab = tabs[currentTabIndex - 1];
+      setActiveTab(prevTab.id);
+      centerTab(prevTab.id);
+    } else if (direction === 'right' && currentTabIndex < tabs.length - 1) {
+      const nextTab = tabs[currentTabIndex + 1];
+      setActiveTab(nextTab.id);
+      centerTab(nextTab.id);
+    }
+  };
+
+  const handleTabClick = (tabId: TabItem['id']) => {
+    setActiveTab(tabId);
+    centerTab(tabId);
+  };
 
   const handleCopyVin = async () => {
     try {
@@ -257,37 +306,97 @@ export const VinReportModal: React.FC<VinReportModalProps> = ({
           </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="p-1.5 rounded-2xl bg-theme-secondary/80 border border-theme-subtle shadow-xs flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-          {tabs.map(tab => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-150 shrink-0 flex items-center gap-2 cursor-pointer ${
-                  isActive
-                    ? 'bg-accent-primary text-white shadow-xs'
-                    : 'text-theme-muted hover:text-theme-primary hover:bg-theme-card/80'
-                }`}
-              >
-                <HugeiconsIcon icon={tab.icon} size={16} strokeWidth={1.8} />
-                <span>{tab.label}</span>
-                {tab.badge !== undefined && (
-                  <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+        {/* Tab Navigation - Enhanced with visible arrows & centered titles on mobile/tablet (Desktop layout untouched) */}
+        <div className="relative flex items-center gap-1.5 w-full">
+          {/* Mobile/Tablet Left Step Arrow (Hidden on Desktop) */}
+          <button
+            type="button"
+            onClick={() => handleScrollTabs('left')}
+            disabled={currentTabIndex <= 0}
+            aria-label="Previous tab"
+            className={`lg:hidden shrink-0 w-8 h-9 sm:w-9 sm:h-10 rounded-xl bg-theme-secondary/80 border border-theme-subtle shadow-xs flex items-center justify-center transition-all cursor-pointer ${
+              currentTabIndex > 0
+                ? 'text-theme-primary hover:bg-theme-card hover:text-accent-primary active:scale-95'
+                : 'text-theme-subtle opacity-25 cursor-not-allowed pointer-events-none'
+            }`}
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+
+          {/* Scroll Track with Subtle Left/Right Fade Masks */}
+          <div className="relative flex-1 min-w-0 overflow-hidden rounded-2xl">
+            {/* Left Fade Gradient Mask (Hidden on Desktop) */}
+            <div
+              className={`pointer-events-none absolute left-0 top-0 bottom-0 w-8 sm:w-12 bg-gradient-to-r from-theme-secondary via-theme-secondary/80 to-transparent z-10 transition-opacity duration-200 lg:hidden ${
+                currentTabIndex > 0 ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+
+            {/* Scrollable Tabs */}
+            <div
+              ref={tabScrollRef}
+              className="p-1.5 rounded-2xl bg-theme-secondary/80 border border-theme-subtle shadow-xs flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth max-lg:snap-x max-lg:snap-mandatory"
+            >
+              {/* Left Spacer for Mobile/Tablet to allow Tab 1 to center (Hidden on Desktop) */}
+              <div className="shrink-0 w-[calc(50%-75px)] sm:w-[calc(50%-90px)] lg:hidden pointer-events-none" aria-hidden="true" />
+
+              {tabs.map(tab => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    ref={el => { tabButtonRefs.current[tab.id] = el; }}
+                    type="button"
+                    onClick={() => handleTabClick(tab.id)}
+                    className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-150 shrink-0 flex items-center gap-2 cursor-pointer max-lg:snap-center ${
                       isActive
-                        ? 'bg-white/20 text-white'
-                        : 'bg-theme-secondary text-theme-muted border border-theme-subtle'
+                        ? 'bg-accent-primary text-white shadow-xs'
+                        : 'text-theme-muted hover:text-theme-primary hover:bg-theme-card/80'
                     }`}
                   >
-                    {tab.badge}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+                    <HugeiconsIcon icon={tab.icon} size={16} strokeWidth={1.8} />
+                    <span className="whitespace-nowrap">{tab.label}</span>
+                    {tab.badge !== undefined && (
+                      <span
+                        className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                          isActive
+                            ? 'bg-white/20 text-white'
+                            : 'bg-theme-secondary text-theme-muted border border-theme-subtle'
+                        }`}
+                      >
+                        {tab.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+
+              {/* Right Spacer for Mobile/Tablet to allow Last Tab to center (Hidden on Desktop) */}
+              <div className="shrink-0 w-[calc(50%-75px)] sm:w-[calc(50%-90px)] lg:hidden pointer-events-none" aria-hidden="true" />
+            </div>
+
+            {/* Right Fade Gradient Mask (Hidden on Desktop) */}
+            <div
+              className={`pointer-events-none absolute right-0 top-0 bottom-0 w-8 sm:w-12 bg-gradient-to-l from-theme-secondary via-theme-secondary/80 to-transparent z-10 transition-opacity duration-200 lg:hidden ${
+                currentTabIndex < tabs.length - 1 ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          </div>
+
+          {/* Mobile/Tablet Right Step Arrow (Hidden on Desktop) */}
+          <button
+            type="button"
+            onClick={() => handleScrollTabs('right')}
+            disabled={currentTabIndex >= tabs.length - 1}
+            aria-label="Next tab"
+            className={`lg:hidden shrink-0 w-8 h-9 sm:w-9 sm:h-10 rounded-xl bg-theme-secondary/80 border border-theme-subtle shadow-xs flex items-center justify-center transition-all cursor-pointer ${
+              currentTabIndex < tabs.length - 1
+                ? 'text-theme-primary hover:bg-theme-card hover:text-accent-primary active:scale-95'
+                : 'text-theme-subtle opacity-25 cursor-not-allowed pointer-events-none'
+            }`}
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Tab 1: Overview */}
