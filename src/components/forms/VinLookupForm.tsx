@@ -170,6 +170,21 @@ export const VinLookupForm: React.FC<VinLookupFormProps> = ({
   const [vinInput, setVinInput] = useState('');
   const [vinTouched, setVinTouched] = useState(false);
 
+  // Responsive mobile check for placeholder fit
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 639px)');
+    setIsMobile(mediaQuery.matches);
+
+    const handler = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+    };
+
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
+
   // License Plate state
   const [plateInput, setPlateInput] = useState('');
   const [stateInput, setStateInput] = useState('California');
@@ -317,7 +332,7 @@ export const VinLookupForm: React.FC<VinLookupFormProps> = ({
                 value={vinInput}
                 onChange={handleVinChange}
                 maxLength={17}
-                placeholder="Enter 17-character VIN Number"
+                placeholder={isMobile ? 'Enter 17-Digit VIN' : 'Enter 17-character VIN Number'}
                 aria-label="Vehicle Identification Number"
                 autoComplete="off"
                 spellCheck={false}

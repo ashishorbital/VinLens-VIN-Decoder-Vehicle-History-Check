@@ -50,20 +50,31 @@ export const TrustReviewBanner: React.FC<TrustReviewBannerProps> = ({
             </div>
           </Reveal>
 
-          {/* Security Features */}
+          {/* Security Features (Single line on mobile, desktop layout untouched) */}
           <Reveal direction="up" delay={250} distance={16}>
-            <div className="flex flex-wrap items-center justify-center gap-6 pt-4 text-xs text-theme-muted">
-              <div className="flex items-center gap-1.5">
-                <Lock className="w-4 h-4 text-emerald-500" />
-                <span>Bank-Grade 256-Bit Encryption</span>
+            <div className="flex flex-nowrap items-center justify-center gap-2 sm:gap-6 pt-4 text-[11px] sm:text-xs text-theme-muted whitespace-nowrap overflow-x-auto no-scrollbar w-full">
+              <div className="flex items-center gap-1.5 shrink-0">
+                <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500 shrink-0" />
+                <span>
+                  <span className="sm:hidden font-medium">256-Bit Encrypted</span>
+                  <span className="hidden sm:inline">Bank-Grade 256-Bit Encryption</span>
+                </span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-cyan-600" />
-                <span>Official 50-State Title Database</span>
+              <span className="text-theme-subtle sm:hidden shrink-0">·</span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-600 shrink-0" />
+                <span>
+                  <span className="sm:hidden font-medium">50-State Titles</span>
+                  <span className="hidden sm:inline">Official 50-State Title Database</span>
+                </span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                <span>Instant Digital Access in Seconds</span>
+              <span className="text-theme-subtle sm:hidden shrink-0">·</span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500 shrink-0" />
+                <span>
+                  <span className="sm:hidden font-medium">Instant Access</span>
+                  <span className="hidden sm:inline">Instant Digital Access in Seconds</span>
+                </span>
               </div>
             </div>
           </Reveal>
