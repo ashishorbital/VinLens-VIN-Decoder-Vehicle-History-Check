@@ -14,7 +14,7 @@ export const TrustReviewBanner: React.FC<TrustReviewBannerProps> = ({
   onHelpClick
 }) => {
   return (
-    <section className="py-16 md:py-24 bg-theme-secondary/60 transition-colors duration-200">
+    <section className="py-12 sm:py-14 lg:py-16 bg-theme-secondary/60 transition-colors duration-200">
       <Container size="narrow">
         <div className="text-center space-y-6">
           {/* Trust Stars Pill & Heading */}
@@ -25,7 +25,7 @@ export const TrustReviewBanner: React.FC<TrustReviewBannerProps> = ({
                   <Star key={i} className="w-4 h-4 fill-amber-500 text-amber-500" />
                 ))}
               </div>
-              <span className="text-xs font-bold text-theme-primary">
+              <span className="text-xs sm:text-sm font-bold text-theme-primary">
                 Trusted by 500,000+ car buyers & verified dealers
               </span>
             </div>
@@ -34,7 +34,7 @@ export const TrustReviewBanner: React.FC<TrustReviewBannerProps> = ({
               Save Thousands of Dollars Before You Sign Any Deal
             </h2>
 
-            <p className="text-base sm:text-lg text-theme-muted max-w-xl mx-auto leading-relaxed mt-4">
+            <p className="text-base sm:text-lg text-slate-600 max-w-xl mx-auto leading-relaxed mt-4 font-normal">
               Don't take the seller's word for it. Run an instant VIN lookup now to verify the vehicle's true mechanical and ownership pedigree.
             </p>
           </Reveal>
@@ -52,7 +52,7 @@ export const TrustReviewBanner: React.FC<TrustReviewBannerProps> = ({
 
           {/* Security Features (Single line on mobile, desktop layout untouched) */}
           <Reveal direction="up" delay={250} distance={16}>
-            <div className="flex flex-nowrap items-center justify-center gap-2 sm:gap-6 pt-4 text-[11px] sm:text-xs text-theme-muted whitespace-nowrap overflow-x-auto no-scrollbar w-full">
+            <div className="flex flex-nowrap items-center justify-center gap-2 sm:gap-6 pt-4 text-xs sm:text-sm text-slate-700 font-medium whitespace-nowrap overflow-x-auto no-scrollbar w-full">
               <div className="flex items-center gap-1.5 shrink-0">
                 <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500 shrink-0" />
                 <span>

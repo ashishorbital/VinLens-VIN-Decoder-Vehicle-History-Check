@@ -58,7 +58,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   }, []);
 
   return (
-    <section id="hero-search" className="relative pt-2 sm:pt-4 md:pt-8 pb-10 sm:pb-16 md:pb-24 overflow-hidden bg-theme-secondary/40 transition-colors duration-200 scroll-mt-20">
+    <section id="hero-search" className="relative pt-2 sm:pt-4 md:pt-8 pb-8 sm:pb-10 md:pb-12 overflow-hidden bg-theme-secondary/40 transition-colors duration-200 scroll-mt-20">
       {/* Background subtle radial gradient */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-accent-primary/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -135,7 +135,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   />
                 </div>
                 <div className="text-left">
-                  <div className="text-[11px] font-bold font-heading flex items-center gap-1.5 transition-colors duration-300">
+                  <div className="text-xs font-bold font-heading flex items-center gap-1.5 transition-colors duration-300">
                     <span className={isInspecting ? 'text-rose-700' : 'text-theme-primary'}>
                       {isInspecting ? 'Salvage Title Brand' : 'Clean Title Verified'}
                     </span>
@@ -146,8 +146,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     />
                   </div>
                   <div
-                    className={`text-[10px] font-medium transition-colors duration-300 ${
-                      isInspecting ? 'text-rose-600/90 font-semibold' : 'text-theme-muted'
+                    className={`text-xs font-medium transition-colors duration-300 ${
+                      isInspecting ? 'text-rose-600 font-semibold' : 'text-slate-600'
                     }`}
                   >
                     {isInspecting ? 'Total Loss Auction Record' : '0 Salvage, Flood, or Junk Brands'}
@@ -178,20 +178,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   />
                 </div>
                 <div className="text-left">
-                  <div className="text-[11px] font-bold font-heading transition-colors duration-300">
+                  <div className="text-xs font-bold font-heading transition-colors duration-300">
                     {isInspecting ? (
                       <span className="text-amber-800">
                         <span className="font-mono font-bold text-rose-600">118,400 mi</span> · Rollback Alert
                       </span>
                     ) : (
                       <span className="text-theme-primary">
-                        <span className="font-mono font-medium">42,180 mi</span> · Verified
+                        <span className="font-mono font-semibold">42,180 mi</span> · Verified
                       </span>
                     )}
                   </div>
                   <div
-                    className={`text-[10px] font-medium transition-colors duration-300 ${
-                      isInspecting ? 'text-amber-700/90 font-semibold' : 'text-theme-muted'
+                    className={`text-xs font-medium transition-colors duration-300 ${
+                      isInspecting ? 'text-amber-700 font-semibold' : 'text-slate-600'
                     }`}
                   >
                     {isInspecting ? 'Discrepancy: -76,220 mi Detected' : 'No Rollback Discrepancies'}
@@ -216,7 +216,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   className={`shrink-0 ${isInspecting ? 'text-rose-600 animate-bounce' : 'text-emerald-500'}`}
                 />
                 <span
-                  className={`text-[10px] transition-colors duration-300 ${
+                  className={`text-xs transition-colors duration-300 ${
                     isInspecting ? 'font-bold text-rose-700' : 'font-semibold text-theme-primary'
                   }`}
                 >
@@ -248,23 +248,23 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </div>
 
               {/* Manufacturer Quick Marks Row */}
-              <div className="pt-1 flex flex-wrap items-center gap-2 text-xs text-theme-subtle">
-                <span className="font-semibold text-theme-muted">Instant lookup for:</span>
+              <div className="pt-1 flex flex-wrap items-center gap-2 text-xs text-slate-700">
+                <span className="font-semibold text-slate-700">Instant lookup for:</span>
                 <div className="flex flex-wrap items-center gap-1.5">
                   {brandPills.map(brand => (
                     <span
                       key={brand}
-                      className="px-2 py-0.5 rounded-md bg-theme-card border border-theme-subtle text-theme-muted font-medium hover:text-theme-primary hover:border-theme-hover transition-colors cursor-default"
+                      className="px-2 py-0.5 rounded-md bg-theme-card border border-theme-subtle text-slate-700 font-medium hover:text-theme-primary hover:border-theme-hover transition-colors cursor-default"
                     >
                       {brand}
                     </span>
                   ))}
-                  <span className="text-theme-subtle">+30 more</span>
+                  <span className="text-slate-600 font-medium">+30 more</span>
                 </div>
               </div>
 
               {/* Trust and Social Proof Badges */}
-              <div className="pt-2 flex flex-wrap items-center gap-6 sm:gap-8 text-xs text-theme-muted">
+              <div className="pt-2 flex flex-wrap items-center gap-6 sm:gap-8 text-xs text-slate-700 font-medium">
                 <div className="flex items-center gap-2">
                   <div className="flex text-amber-500">
                     {[...Array(5)].map((_, i) => (
@@ -278,7 +278,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     ))}
                   </div>
                   <span className="font-bold text-theme-primary text-sm">4.9 / 5</span>
-                  <span className="text-theme-subtle">(12,400+ reviews)</span>
+                  <span className="text-slate-600">(12,400+ reviews)</span>
                 </div>
 
                 <div className="flex items-center gap-1.5">

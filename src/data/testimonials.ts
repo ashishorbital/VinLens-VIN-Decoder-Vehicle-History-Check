@@ -54,5 +54,27 @@ export const TESTIMONIALS: TestimonialItem[] = [
     moneySaved: 'Saved ~$6,000',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&h=150&q=80',
     date: 'Verified Buyer · 1 month ago'
+  },
+  {
+    id: '5',
+    name: 'Brandon T.',
+    location: 'Nashville, TN',
+    rating: 5,
+    review: 'Ran a check right on the dealer lot before signing. The report immediately flagged an unresolved insurance lien and structural frame notification from an out-of-state auction. Saved me from buying a financial nightmare.',
+    vehicleChecked: '2017 Chevrolet Silverado 1500',
+    moneySaved: 'Saved ~$2,800',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80',
+    date: 'Verified Buyer · 1 month ago'
+  },
+  {
+    id: '6',
+    name: 'Chloe W.',
+    location: 'Seattle, WA',
+    rating: 5,
+    review: 'Detailed battery warranty records, single original owner verification, and complete software service history gave me total confidence in this EV purchase. The PDF export feature was great for my bank.',
+    vehicleChecked: '2022 Tesla Model 3 Long Range',
+    moneySaved: 'Negotiated $1,500 Off',
+    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80',
+    date: 'Verified Buyer · 2 months ago'
   }
 ];

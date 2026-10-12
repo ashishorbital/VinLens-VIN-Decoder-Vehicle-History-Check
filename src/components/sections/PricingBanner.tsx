@@ -18,7 +18,7 @@ export const PricingBanner: React.FC<PricingBannerProps> = ({
   priceSubheadline = 'Explore vehicle history information before making your next car-buying decision.'
 }) => {
   return (
-    <section id="pricing" className="py-16 md:py-20 bg-theme-secondary/50 transition-colors duration-200">
+    <section id="pricing" className="py-12 sm:py-14 lg:py-16 bg-theme-secondary/50 transition-colors duration-200">
       <Container>
         <Reveal direction="up" distance={24}>
           <div className="relative rounded-3xl border border-theme-subtle shadow-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white">
@@ -43,7 +43,7 @@ export const PricingBanner: React.FC<PricingBannerProps> = ({
                   {priceHeadline}
                 </h2>
 
-                <p className="text-base sm:text-lg text-slate-300 max-w-xl leading-relaxed">
+                <p className="text-base sm:text-lg text-slate-200 max-w-xl leading-relaxed">
                   {priceSubheadline}
                 </p>
 
@@ -56,8 +56,8 @@ export const PricingBanner: React.FC<PricingBannerProps> = ({
                   />
                 </div>
 
-                {/* Disclaimer */}
-                <p className="text-xs text-slate-400 max-w-lg leading-relaxed pt-1">
+                {/* Disclaimer: High-contrast legible text */}
+                <p className="text-xs sm:text-sm text-slate-200 max-w-xl leading-relaxed pt-2 font-normal">
                   * Introductory promotional rate is illustrative for frontend demonstration. Single and discounted multi-report packages will be configurable during checkout integration.
                 </p>
               </div>
@@ -67,7 +67,7 @@ export const PricingBanner: React.FC<PricingBannerProps> = ({
                 <div className="relative w-64 p-5 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl space-y-3 transform rotate-2 hover:rotate-0 transition-transform duration-300">
                   <div className="flex items-center justify-between text-xs pb-2 border-b border-white/15">
                     <span className="font-bold tracking-wider uppercase text-cyan-300">Instant Access</span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-white font-bold text-[10px]">
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-white font-bold text-xs">
                       Verified
                     </span>
                   </div>

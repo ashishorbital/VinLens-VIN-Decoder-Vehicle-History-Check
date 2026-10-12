@@ -12,14 +12,14 @@ export const FAQSection: React.FC = () => {
   }));
 
   return (
-    <section id="faq" className="py-16 md:py-24 bg-theme-main transition-colors duration-200">
+    <section id="faq" className="py-12 sm:py-14 lg:py-16 bg-theme-main transition-colors duration-200">
       <Container size="narrow">
         <Reveal direction="up" distance={20}>
-          <div className="text-center space-y-3 mb-12">
+          <div className="text-center space-y-3 mb-8 sm:mb-10 lg:mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-theme-primary">
               Frequently Asked Questions
             </h2>
-            <p className="text-base text-theme-muted">
+            <p className="text-base text-slate-600 leading-relaxed font-normal">
               Everything you need to know about VIN decoding, NMVTIS database coverage, and vehicle history checks.
             </p>
           </div>
@@ -39,7 +39,7 @@ export const FAQSection: React.FC = () => {
 
             <div className="relative z-10 max-w-2xl mx-auto space-y-3.5">
               {/* Pulsing Status Tag */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-accent-primary/10 text-accent-primary border border-accent-primary/25 shadow-2xs">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-accent-primary/10 text-[#006E88] border border-accent-primary/25 shadow-2xs">
                 <span className="w-2 h-2 rounded-full bg-accent-primary animate-pulse" />
                 <span>24/7 Specialist Assistance</span>
               </div>
@@ -50,7 +50,7 @@ export const FAQSection: React.FC = () => {
               </h3>
 
               {/* Catchy, Readable Description */}
-              <p className="text-sm sm:text-base text-theme-muted leading-relaxed max-w-xl mx-auto">
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl mx-auto font-normal">
                 Our certified vehicle support specialists are ready to guide you through title brands, odometer records, and lien inquiries in real time.
               </p>
 

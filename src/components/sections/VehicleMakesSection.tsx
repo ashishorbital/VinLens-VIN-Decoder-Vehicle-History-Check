@@ -40,15 +40,15 @@ export const VehicleMakesSection: React.FC<VehicleMakesSectionProps> = ({
   ];
 
   return (
-    <section id="makes" className="py-16 md:py-24 bg-theme-main transition-colors duration-200">
+    <section id="makes" className="py-12 sm:py-14 lg:py-16 bg-theme-main transition-colors duration-200">
       <Container size="wide">
         {/* Section Heading */}
         <Reveal direction="up" distance={20}>
-          <div className="text-center max-w-3xl mx-auto space-y-3 mb-12">
+          <div className="text-center max-w-3xl mx-auto space-y-3 mb-8 sm:mb-10 lg:mb-12">
             <h2 className="text-3xl sm:text-4xl font-heading font-semibold tracking-tight text-theme-primary">
               We Provide VIN Decoding for the Following Makes
             </h2>
-            <p className="text-base text-theme-muted">
+            <p className="text-base text-slate-600 leading-relaxed font-normal">
               Select any car brand to autofill a validated manufacturer VIN and preview the decoder specifications.
             </p>
           </div>
@@ -87,7 +87,7 @@ export const VehicleMakesSection: React.FC<VehicleMakesSectionProps> = ({
                         <div className="text-xs sm:text-sm font-bold text-theme-primary group-hover:text-accent-primary transition-colors truncate">
                           {make.name}
                         </div>
-                        <div className="text-[10px] sm:text-[11px] text-theme-muted font-medium truncate">
+                        <div className="text-xs text-slate-600 font-medium truncate">
                           {make.country}
                         </div>
                       </div>
@@ -159,7 +159,7 @@ export const VehicleMakesSection: React.FC<VehicleMakesSectionProps> = ({
                       <div className="text-xs sm:text-sm font-bold text-theme-primary group-hover:text-accent-primary transition-colors truncate">
                         {make.name}
                       </div>
-                      <div className="text-[10px] sm:text-[11px] text-theme-muted font-medium truncate">
+                      <div className="text-xs text-slate-600 font-medium truncate">
                         {make.country}
                       </div>
                     </div>
@@ -206,13 +206,13 @@ export const VehicleMakesSection: React.FC<VehicleMakesSectionProps> = ({
 
         {/* MotoMarks Attribution Link (Required for free-tier domain verification) */}
         <div className="text-center mt-10">
-          <p className="text-[11px] text-theme-subtle">
+          <p className="text-xs text-slate-600 font-medium">
             Car brand logos powered by{' '}
             <a
               href="https://motomarks.io"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-accent-primary hover:underline font-semibold"
+              className="text-[#007A99] hover:underline font-bold"
             >
               MotoMarks.io
             </a>

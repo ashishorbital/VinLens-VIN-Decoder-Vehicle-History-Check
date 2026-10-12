@@ -63,10 +63,10 @@ export const SupportSection: React.FC = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-theme-main transition-colors duration-200">
+    <section className="py-12 sm:py-14 lg:py-16 bg-theme-main transition-colors duration-200">
       <Container>
         <Reveal direction="up" distance={20}>
-          <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
+          <div className="text-center max-w-3xl mx-auto space-y-4 mb-8 sm:mb-10 lg:mb-12">
             {/* Dedicated Customer Support Icon */}
             <div className="flex items-center justify-center mb-3">
               <div className="w-13 h-13 rounded-full bg-accent-primary text-white flex items-center justify-center shadow-lg shadow-accent-primary/25">
@@ -77,7 +77,7 @@ export const SupportSection: React.FC = () => {
             <h2 className="text-3xl sm:text-4xl font-heading font-semibold tracking-tight text-theme-primary">
               Dedicated Customer Support: We're Here to Help
             </h2>
-            <p className="text-base text-theme-muted leading-relaxed">
+            <p className="text-base text-slate-600 leading-relaxed font-normal">
               Have questions about a salvage brand, NMVTIS database interpretation, or an odometer reading anomaly? Our automotive specialists are always available.
             </p>
           </div>
@@ -91,13 +91,13 @@ export const SupportSection: React.FC = () => {
                 className="p-6 sm:p-7 rounded-2xl border border-theme-subtle bg-theme-card/90 backdrop-blur-md shadow-xs hover:shadow-[0_12px_28px_-6px_rgba(0,152,187,0.14),0_4px_12px_rgba(0,152,187,0.06)] hover:border-[#0098BB]/40 hover:-translate-y-1 transition-all duration-300 h-full flex flex-col justify-between group cursor-default select-none"
               >
                 <div>
-                  {/* Top Badge with Pulsing Live Dot & Step Counter */}
+                  {/* Top Badge: Standardized text-xs with high contrast */}
                   <div className="flex items-center justify-between mb-4">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border shadow-2xs bg-[#0098BB]/10 text-[#0098BB] border-[#0098BB]/25">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold tracking-wider uppercase border shadow-2xs bg-[#0098BB]/10 text-[#006E88] border-[#0098BB]/35">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#0098BB] animate-pulse" />
                       {pillar.tag}
                     </span>
-                    <span className="text-xs font-mono font-bold text-theme-subtle group-hover:text-accent-primary transition-colors">
+                    <span className="text-xs font-mono font-bold text-slate-700 group-hover:text-accent-primary transition-colors">
                       {pillar.step}
                     </span>
                   </div>
@@ -108,15 +108,15 @@ export const SupportSection: React.FC = () => {
                   </h3>
 
                   {/* Description */}
-                  <p className="text-xs sm:text-sm text-theme-muted leading-relaxed">
+                  <p className="text-sm text-slate-600 leading-relaxed font-normal">
                     {pillar.desc}
                   </p>
                 </div>
 
                 {/* Sub-bar / Telemetry Metadata */}
-                <div className="pt-4 mt-5 border-t border-theme-subtle/50 flex items-center justify-between text-xs text-theme-subtle">
-                  <span className="font-medium text-theme-muted">{pillar.meta}</span>
-                  <span className="text-accent-primary font-bold text-[11px] opacity-80 group-hover:opacity-100 transition-opacity">
+                <div className="pt-4 mt-5 border-t border-theme-subtle/50 flex items-center justify-between text-xs text-slate-700 font-semibold">
+                  <span className="truncate">{pillar.meta}</span>
+                  <span className="text-accent-primary font-bold text-xs opacity-90 group-hover:opacity-100 transition-opacity">
                     Active
                   </span>
                 </div>
@@ -143,7 +143,7 @@ export const SupportSection: React.FC = () => {
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border shadow-2xs bg-[#0098BB]/10 text-[#0098BB] border-[#0098BB]/25">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold tracking-wider uppercase border shadow-2xs bg-[#0098BB]/10 text-[#006E88] border-[#0098BB]/35">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#0098BB] animate-pulse" />
                       {pillar.tag}
                     </span>
@@ -156,14 +156,14 @@ export const SupportSection: React.FC = () => {
                     {pillar.title}
                   </h3>
 
-                  <p className="text-xs text-theme-muted leading-relaxed">
+                  <p className="text-sm text-slate-600 leading-relaxed font-normal">
                     {pillar.desc}
                   </p>
                 </div>
 
-                <div className="pt-4 mt-5 border-t border-theme-subtle/50 flex items-center justify-between text-xs text-theme-subtle">
-                  <span className="font-medium text-theme-muted">{pillar.meta}</span>
-                  <span className="text-accent-primary font-bold text-[11px]">
+                <div className="pt-4 mt-5 border-t border-theme-subtle/50 flex items-center justify-between text-xs text-slate-700 font-semibold">
+                  <span className="truncate">{pillar.meta}</span>
+                  <span className="text-accent-primary font-bold text-xs">
                     Active
                   </span>
                 </div>

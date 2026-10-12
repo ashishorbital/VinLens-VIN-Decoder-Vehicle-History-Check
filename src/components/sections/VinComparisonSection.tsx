@@ -79,7 +79,7 @@ export const VinComparisonSection: React.FC<VinComparisonSectionProps> = ({ onCh
   ];
 
   return (
-    <section id="comparison" className="py-16 md:py-24 bg-theme-main transition-colors duration-200">
+    <section id="comparison" className="py-12 sm:py-14 lg:py-16 bg-theme-main transition-colors duration-200">
       <Container>
         <Reveal direction="up" distance={20}>
           <div className="text-center max-w-3xl mx-auto space-y-3 mb-12">
@@ -197,10 +197,10 @@ export const VinComparisonSection: React.FC<VinComparisonSectionProps> = ({ onCh
                 >
                   {/* Card Header */}
                   <div className="flex items-center justify-between pb-2.5 border-b border-theme-subtle/60 text-xs">
-                    <span className="font-heading font-bold text-xs px-2.5 py-0.5 rounded-full bg-accent-primary/10 text-accent-primary border border-accent-primary/25">
+                    <span className="font-heading font-bold text-xs px-2.5 py-0.5 rounded-full bg-accent-primary/10 text-[#007A99] border border-accent-primary/25">
                       Feature {itemIndex + 1} of {comparisonItems.length}
                     </span>
-                    <span className="text-[11px] text-theme-subtle font-medium flex items-center gap-1">
+                    <span className="text-xs text-slate-600 font-semibold flex items-center gap-1">
                       <span>Swipe card</span>
                       <span className="text-accent-primary font-bold">↔</span>
                     </span>
@@ -215,7 +215,7 @@ export const VinComparisonSection: React.FC<VinComparisonSectionProps> = ({ onCh
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     {/* Free VIN check side */}
                     <div className="p-3 rounded-xl bg-theme-secondary/80 border border-theme-subtle space-y-1">
-                      <span className="text-[10px] uppercase font-bold text-theme-subtle block tracking-wider">
+                      <span className="text-xs uppercase font-bold text-slate-700 block tracking-wider">
                         Free VIN Check
                       </span>
                       <div className="flex items-start gap-1.5 pt-0.5">
@@ -224,7 +224,7 @@ export const VinComparisonSection: React.FC<VinComparisonSectionProps> = ({ onCh
                         ) : (
                           <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
                         )}
-                        <span className={`leading-tight font-medium ${item.free === 'Not included' ? 'text-rose-500' : 'text-theme-muted'}`}>
+                        <span className={`leading-tight font-medium ${item.free === 'Not included' ? 'text-rose-600 font-semibold' : 'text-slate-700'}`}>
                           {item.free}
                         </span>
                       </div>
@@ -233,7 +233,7 @@ export const VinComparisonSection: React.FC<VinComparisonSectionProps> = ({ onCh
                     {/* Full report side */}
                     <div className="p-3 rounded-xl bg-gradient-to-br from-accent-primary/15 to-accent-primary/5 border border-accent-primary/30 shadow-2xs space-y-1">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] uppercase font-bold text-accent-primary block tracking-wider">
+                        <span className="text-xs uppercase font-bold text-[#007A99] block tracking-wider">
                           Full Report
                         </span>
                         <Sparkles className="w-3 h-3 text-accent-primary" />
@@ -302,7 +302,7 @@ export const VinComparisonSection: React.FC<VinComparisonSectionProps> = ({ onCh
               <span>Run Free Check or Upgrade Report</span>
               <ArrowRight className="w-4 h-4" />
             </Button>
-            <p className="text-xs text-theme-subtle mt-2">
+            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-2">
               Instant online access · 100% money-back satisfaction guarantee on data errors
             </p>
           </div>
