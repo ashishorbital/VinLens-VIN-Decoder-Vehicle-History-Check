@@ -25,8 +25,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onHelpClick,
   onExploreReportClick: _onExploreReportClick
 }) => {
-  const brandPills = ['Toyota', 'Honda', 'Ford', 'BMW', 'Chevrolet', 'Mercedes', 'Audi', 'Tesla'];
-
   // Typing animation for "Showroom Shine." after page loads
   const [typedText, setTypedText] = React.useState('');
 
@@ -247,21 +245,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 />
               </div>
 
-              {/* Manufacturer Quick Marks Row */}
-              <div className="pt-1 flex flex-wrap items-center gap-2 text-xs text-slate-700">
-                <span className="font-semibold text-slate-700">Instant lookup for:</span>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  {brandPills.map(brand => (
-                    <span
-                      key={brand}
-                      className="px-2 py-0.5 rounded-md bg-theme-card border border-theme-subtle text-slate-700 font-medium hover:text-theme-primary hover:border-theme-hover transition-colors cursor-default"
-                    >
-                      {brand}
-                    </span>
-                  ))}
-                  <span className="text-slate-600 font-medium">+30 more</span>
-                </div>
-              </div>
 
               {/* Trust and Social Proof Badges */}
               <div className="pt-2 flex flex-wrap items-center gap-6 sm:gap-8 text-xs text-slate-700 font-medium">
