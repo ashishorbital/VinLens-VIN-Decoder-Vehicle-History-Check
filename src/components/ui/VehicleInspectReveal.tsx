@@ -20,14 +20,22 @@ export const VehicleInspectReveal: React.FC<VehicleInspectRevealProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [spotlightRadius, setSpotlightRadius] = useState(160);
 
   useEffect(() => {
-    const checkDesktop = () => {
-      setIsDesktop(typeof window !== 'undefined' && window.innerWidth >= 1024);
+    const checkViewport = () => {
+      const desktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
+      setIsDesktop(desktop);
+      if (desktop) {
+        setSpotlightRadius(160);
+      } else {
+        const w = containerRef.current?.getBoundingClientRect().width || window.innerWidth;
+        setSpotlightRadius(Math.max(68, Math.min(Math.round(w * 0.22), 92)));
+      }
     };
-    checkDesktop();
-    window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
+    checkViewport();
+    window.addEventListener('resize', checkViewport);
+    return () => window.removeEventListener('resize', checkViewport);
   }, []);
 
   // Target coordinates from mouse / touch
@@ -48,36 +56,95 @@ export const VehicleInspectReveal: React.FC<VehicleInspectRevealProps> = ({
     y: null
   });
 
-  // 0.1 lerp loop in requestAnimationFrame with cleanup on unmount (Desktop only)
-  useEffect(() => {
-    if (!isDesktop) return;
+  // Mobile touch interaction refs
+  const touchTargetRef = useRef<{ x: number | null; y: number | null }>({
+    x: null,
+    y: null
+  });
+  const isUserTouchingRef = useRef(false);
+  const touchResumeTimeoutRef = useRef<number | null>(null);
 
+  // Unified animation loop: Desktop mouse lerp (untouched) + Mobile autonomous sweep & touch drag
+  useEffect(() => {
     let animId: number;
 
     const animate = () => {
-      const target = targetRef.current;
-      const current = currentRef.current;
+      if (isDesktop) {
+        // Desktop: Exactly as before (untouched)
+        const target = targetRef.current;
+        const current = currentRef.current;
 
-      if (target.x !== null && target.y !== null) {
-        if (current.x === null || current.y === null) {
-          current.x = target.x;
-          current.y = target.y;
-          setEasedCursor({ x: current.x, y: current.y });
-        } else {
-          // Smooth 0.1 lerp
-          const dx = target.x - current.x;
-          const dy = target.y - current.y;
-          if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
-            current.x += dx * 0.1;
-            current.y += dy * 0.1;
+        if (target.x !== null && target.y !== null) {
+          if (current.x === null || current.y === null) {
+            current.x = target.x;
+            current.y = target.y;
             setEasedCursor({ x: current.x, y: current.y });
+          } else {
+            // Smooth 0.1 lerp
+            const dx = target.x - current.x;
+            const dy = target.y - current.y;
+            if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
+              current.x += dx * 0.1;
+              current.y += dy * 0.1;
+              setEasedCursor({ x: current.x, y: current.y });
+            }
+          }
+        } else {
+          if (current.x !== null || current.y !== null) {
+            current.x = null;
+            current.y = null;
+            setEasedCursor({ x: null, y: null });
           }
         }
       } else {
-        if (current.x !== null || current.y !== null) {
-          current.x = null;
-          current.y = null;
-          setEasedCursor({ x: null, y: null });
+        // Mobile & Touch: Option 1 - Autonomous Cinematic Scanner Sweep + Touch Drag
+        const current = currentRef.current;
+        const rect = containerRef.current?.getBoundingClientRect();
+
+        if (rect && rect.width > 0) {
+          let desiredX: number;
+          let desiredY: number;
+
+          if (isUserTouchingRef.current && touchTargetRef.current.x !== null && touchTargetRef.current.y !== null) {
+            // User direct finger drag
+            desiredX = touchTargetRef.current.x;
+            desiredY = touchTargetRef.current.y;
+
+            // Damage zone is front-right impact quadrant
+            const isNearDamage = desiredX > rect.width * 0.55 && desiredY > rect.height * 0.40;
+            onInspectChange?.(isNearDamage);
+          } else {
+            // Autonomous Cinematic Scanner Loop (4.8s cycle)
+            const now = performance.now();
+            const cycleDuration = 4800;
+            const t = (now % cycleDuration) / cycleDuration;
+            // Smooth sinusoidal ease: 0 -> 1 -> 0
+            const ease = (1 - Math.cos(t * Math.PI * 2)) / 2;
+
+            const startX = rect.width * 0.32;
+            const endX = rect.width * 0.74;
+            const startY = rect.height * 0.48;
+            const endY = rect.height * 0.60;
+
+            desiredX = startX + (endX - startX) * ease;
+            desiredY = startY + (endY - startY) * ease;
+
+            // Trigger severe accident notification when scanning front-right impact zone
+            const isNearDamage = ease > 0.62;
+            onInspectChange?.(isNearDamage);
+          }
+
+          if (current.x === null || current.y === null) {
+            current.x = desiredX;
+            current.y = desiredY;
+            setEasedCursor({ x: current.x, y: current.y });
+          } else {
+            // Smooth lerp: 0.18 for finger responsiveness, 0.08 for autonomous gliding
+            const lerpSpeed = isUserTouchingRef.current ? 0.18 : 0.08;
+            current.x += (desiredX - current.x) * lerpSpeed;
+            current.y += (desiredY - current.y) * lerpSpeed;
+            setEasedCursor({ x: current.x, y: current.y });
+          }
         }
       }
 
@@ -88,9 +155,13 @@ export const VehicleInspectReveal: React.FC<VehicleInspectRevealProps> = ({
 
     return () => {
       cancelAnimationFrame(animId);
+      if (touchResumeTimeoutRef.current) {
+        clearTimeout(touchResumeTimeoutRef.current);
+      }
     };
-  }, [isDesktop]);
+  }, [isDesktop, onInspectChange]);
 
+  // Desktop mouse handlers (untouched)
   const updateTarget = useCallback((clientX: number, clientY: number) => {
     if (!isDesktop || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -115,6 +186,40 @@ export const VehicleInspectReveal: React.FC<VehicleInspectRevealProps> = ({
     onInspectChange?.(false);
   }, [isDesktop, onInspectChange]);
 
+  // Mobile touch handlers
+  const updateTouchTarget = useCallback((clientX: number, clientY: number) => {
+    if (isDesktop || !containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    const y = Math.max(0, Math.min(clientY - rect.top, rect.height));
+    touchTargetRef.current = { x, y };
+  }, [isDesktop]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (isDesktop) return;
+    isUserTouchingRef.current = true;
+    if (touchResumeTimeoutRef.current) {
+      clearTimeout(touchResumeTimeoutRef.current);
+      touchResumeTimeoutRef.current = null;
+    }
+    const touch = e.touches[0];
+    updateTouchTarget(touch.clientX, touch.clientY);
+  }, [isDesktop, updateTouchTarget]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (isDesktop) return;
+    const touch = e.touches[0];
+    updateTouchTarget(touch.clientX, touch.clientY);
+  }, [isDesktop, updateTouchTarget]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (isDesktop) return;
+    // Delay resuming autonomous scan by 1s for tactile release
+    touchResumeTimeoutRef.current = window.setTimeout(() => {
+      isUserTouchingRef.current = false;
+    }, 1000);
+  }, [isDesktop]);
+
   // Sync external inspection trigger (Desktop only)
   useEffect(() => {
     if (!isDesktop) return;
@@ -137,7 +242,11 @@ export const VehicleInspectReveal: React.FC<VehicleInspectRevealProps> = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
-      className={`relative select-none lg:cursor-crosshair lg:group overflow-visible ${className}`}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+      className={`relative select-none lg:cursor-crosshair lg:group overflow-visible touch-pan-y ${className}`}
     >
       {/* Main Image Container: Floating hover effect only on desktop (lg:animate-float-car) */}
       <div className="relative w-full overflow-visible drop-shadow-xl lg:drop-shadow-2xl rounded-2xl bg-transparent min-h-0 lg:min-h-[320px] flex items-center justify-center lg:animate-float-car">
@@ -149,15 +258,21 @@ export const VehicleInspectReveal: React.FC<VehicleInspectRevealProps> = ({
           loading="eager"
         />
 
-        {/* RevealLayer Spotlight: Desktop only */}
-        {isDesktop && (
-          <RevealLayer
-            image={damagedSrc}
-            cursorX={easedCursor.x}
-            cursorY={easedCursor.y}
-            spotlightRadius={160}
-          />
-        )}
+        {/* RevealLayer Spotlight: Desktop (160px) + Mobile Responsive Autonomous/Touch Spotlight */}
+        <RevealLayer
+          image={damagedSrc}
+          cursorX={easedCursor.x}
+          cursorY={easedCursor.y}
+          spotlightRadius={spotlightRadius}
+        />
+      </div>
+
+      {/* Mobile-Only Interactive Hint Badge (strictly hidden on desktop) */}
+      <div className="lg:hidden mt-2.5 flex items-center justify-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-theme-secondary/80 border border-theme-subtle text-[11px] font-semibold text-theme-muted shadow-2xs backdrop-blur-xs select-none">
+          <span className="w-1.5 h-1.5 rounded-full bg-accent-primary animate-pulse" />
+          <span>Auto-Scanning Damage • Drag to inspect</span>
+        </div>
       </div>
     </div>
   );
