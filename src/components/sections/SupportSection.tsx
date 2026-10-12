@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { Container } from '../layout/Container';
-import { Headphones } from 'lucide-react';
+import { Headphones, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Reveal } from '../ui/Reveal';
 
 export const SupportSection: React.FC = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   const pillars = [
     {
       step: '01',
@@ -28,6 +32,36 @@ export const SupportSection: React.FC = () => {
     }
   ];
 
+  const scrollToCard = (index: number) => {
+    const targetIndex = Math.max(0, Math.min(pillars.length - 1, index));
+    const card = cardRefs.current[targetIndex];
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      setActiveIndex(targetIndex);
+    }
+  };
+
+  const handleScroll = () => {
+    const container = carouselRef.current;
+    if (!container) return;
+    const containerCenter = container.scrollLeft + container.clientWidth / 2;
+
+    let closestIndex = 0;
+    let minDiff = Infinity;
+
+    cardRefs.current.forEach((card, idx) => {
+      if (!card) return;
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const diff = Math.abs(containerCenter - cardCenter);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestIndex = idx;
+      }
+    });
+
+    setActiveIndex(closestIndex);
+  };
+
   return (
     <section className="py-16 md:py-24 bg-theme-main transition-colors duration-200">
       <Container>
@@ -49,8 +83,8 @@ export const SupportSection: React.FC = () => {
           </div>
         </Reveal>
 
-        {/* 3 Pillars - Icon-free, matching website Damage Check cyan aesthetic */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        {/* 1. Desktop 3-Column Grid (Untouched, visible on md and up) */}
+        <div className="hidden md:grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {pillars.map((pillar, idx) => (
             <Reveal key={idx} direction="up" delay={idx * 110} distance={20}>
               <div
@@ -89,6 +123,92 @@ export const SupportSection: React.FC = () => {
               </div>
             </Reveal>
           ))}
+        </div>
+
+        {/* 2. Mobile Horizontal Snap Carousel with Edge Peek (< 768px) */}
+        <div className="md:hidden space-y-5">
+          {/* Snap Track */}
+          <div
+            ref={carouselRef}
+            onScroll={handleScroll}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth px-4 py-2 -mx-4"
+          >
+            {pillars.map((pillar, idx) => (
+              <div
+                key={idx}
+                ref={el => { cardRefs.current[idx] = el; }}
+                className={`w-[84%] shrink-0 snap-center p-6 rounded-2xl border border-theme-subtle bg-theme-card/95 backdrop-blur-md shadow-[0_10px_28px_-6px_rgba(0,152,187,0.12),0_4px_12px_rgba(0,0,0,0.04)] flex flex-col justify-between transition-all duration-300 ${
+                  activeIndex === idx ? 'border-[#0098BB]/40 scale-[1.01]' : 'opacity-85'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border shadow-2xs bg-[#0098BB]/10 text-[#0098BB] border-[#0098BB]/25">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#0098BB] animate-pulse" />
+                      {pillar.tag}
+                    </span>
+                    <span className="text-xs font-mono font-bold text-accent-primary">
+                      {pillar.step}
+                    </span>
+                  </div>
+
+                  <h3 className="text-lg font-bold font-heading text-theme-primary mb-2.5 tracking-tight">
+                    {pillar.title}
+                  </h3>
+
+                  <p className="text-xs text-theme-muted leading-relaxed">
+                    {pillar.desc}
+                  </p>
+                </div>
+
+                <div className="pt-4 mt-5 border-t border-theme-subtle/50 flex items-center justify-between text-xs text-theme-subtle">
+                  <span className="font-medium text-theme-muted">{pillar.meta}</span>
+                  <span className="text-accent-primary font-bold text-[11px]">
+                    Active
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Controls: Prev, Indicator Dots, Next */}
+          <div className="flex items-center justify-center gap-3 pt-1">
+            <button
+              type="button"
+              onClick={() => scrollToCard(activeIndex - 1)}
+              disabled={activeIndex === 0}
+              aria-label="Previous support pillar"
+              className="w-9 h-9 rounded-xl bg-theme-card border border-theme-subtle shadow-xs flex items-center justify-center text-theme-muted hover:text-accent-primary disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all cursor-pointer"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-1.5">
+              {pillars.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => scrollToCard(idx)}
+                  aria-label={`Go to card ${idx + 1}`}
+                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                    activeIndex === idx
+                      ? 'w-6 bg-accent-primary'
+                      : 'w-2 bg-theme-subtle/50 hover:bg-theme-muted'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => scrollToCard(activeIndex + 1)}
+              disabled={activeIndex === pillars.length - 1}
+              aria-label="Next support pillar"
+              className="w-9 h-9 rounded-xl bg-theme-card border border-theme-subtle shadow-xs flex items-center justify-center text-theme-muted hover:text-accent-primary disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all cursor-pointer"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </Container>
     </section>

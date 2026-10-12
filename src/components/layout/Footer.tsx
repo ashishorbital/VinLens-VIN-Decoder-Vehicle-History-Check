@@ -172,20 +172,22 @@ export const Footer: React.FC<FooterProps> = ({
               &copy; {new Date().getFullYear()} <strong className="text-theme-primary font-semibold">VinLens</strong>. All rights reserved.
             </p>
 
-            <div className="flex flex-wrap items-center gap-5 text-xs">
-              <a href="#" onClick={e => e.preventDefault()} className="hover:text-theme-primary transition-colors">
+            <div className="flex flex-nowrap sm:flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-5 text-[11px] sm:text-xs whitespace-nowrap overflow-x-auto no-scrollbar w-full sm:w-auto">
+              <a href="#" onClick={e => e.preventDefault()} className="hover:text-theme-primary transition-colors shrink-0">
                 Privacy Policy
               </a>
-              <span className="text-theme-subtle">·</span>
-              <a href="#" onClick={e => e.preventDefault()} className="hover:text-theme-primary transition-colors">
-                Terms of Service
+              <span className="text-theme-subtle shrink-0">·</span>
+              <a href="#" onClick={e => e.preventDefault()} className="hover:text-theme-primary transition-colors shrink-0">
+                <span className="sm:hidden">Terms</span>
+                <span className="hidden sm:inline">Terms of Service</span>
               </a>
-              <span className="text-theme-subtle">·</span>
-              <a href="#" onClick={e => e.preventDefault()} className="hover:text-theme-primary transition-colors">
-                Data Sources & NMVTIS
+              <span className="text-theme-subtle shrink-0">·</span>
+              <a href="#" onClick={e => e.preventDefault()} className="hover:text-theme-primary transition-colors shrink-0">
+                <span className="sm:hidden">Data Sources</span>
+                <span className="hidden sm:inline">Data Sources & NMVTIS</span>
               </a>
-              <span className="text-theme-subtle">·</span>
-              <a href="#" onClick={e => e.preventDefault()} className="hover:text-theme-primary transition-colors">
+              <span className="text-theme-subtle shrink-0">·</span>
+              <a href="#" onClick={e => e.preventDefault()} className="hover:text-theme-primary transition-colors shrink-0">
                 Contact Support
               </a>
             </div>

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { Container } from '../layout/Container';
-import { Check, X, Sparkles, ArrowRight } from 'lucide-react';
+import { Check, X, Sparkles, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Reveal } from '../ui/Reveal';
 
@@ -9,6 +9,42 @@ export interface VinComparisonSectionProps {
 }
 
 export const VinComparisonSection: React.FC<VinComparisonSectionProps> = ({ onCheckVinClick }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const currentX = e.touches[0].clientX;
+    const diff = currentX - touchStartX.current;
+    setDragOffset(diff);
+  };
+
+  const nextCard = () => {
+    setCurrentIndex(prev => (prev + 1) % 6);
+  };
+
+  const prevCard = () => {
+    setCurrentIndex(prev => (prev - 1 + 6) % 6);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null) return;
+    if (dragOffset > 50) {
+      prevCard();
+    } else if (dragOffset < -50) {
+      nextCard();
+    }
+    setDragOffset(0);
+    setIsDragging(false);
+    touchStartX.current = null;
+  };
   const comparisonItems = [
     {
       feature: 'Vehicle Specifications',
@@ -110,25 +146,148 @@ export const VinComparisonSection: React.FC<VinComparisonSectionProps> = ({ onCh
           </div>
         </Reveal>
 
-        {/* Mobile Comparison Cards */}
-        <div className="md:hidden space-y-4 font-data">
-          {comparisonItems.map((item, idx) => (
-            <Reveal key={idx} direction="up" delay={idx * 40} distance={15}>
-              <div className="p-4 rounded-xl border border-theme-subtle bg-theme-card space-y-3">
-                <h4 className="text-base font-bold text-theme-primary">{item.feature}</h4>
-                <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-theme-subtle/60">
-                  <div className="p-2.5 rounded-lg bg-theme-secondary border border-theme-subtle">
-                    <span className="text-[11px] uppercase font-bold text-theme-primary block mb-1">Free VIN Check</span>
-                    <span className="text-theme-muted leading-tight font-normal">{item.free}</span>
+        {/* Mobile 3D Swipe Deck (Only active on mobile & tablet < 768px; Desktop table remains untouched) */}
+        <div className="md:hidden space-y-6 pt-2">
+          {/* 3D Stacked Container */}
+          <div className="relative h-[235px] sm:h-[220px] w-full max-w-sm sm:max-w-md mx-auto touch-pan-y">
+            {[2, 1, 0].map(layer => {
+              const itemIndex = (currentIndex + layer) % comparisonItems.length;
+              const item = comparisonItems[itemIndex];
+              const isFront = layer === 0;
+
+              let transformStyle = '';
+              let opacityStyle = 1;
+              let zIndexStyle = 30;
+
+              if (isFront) {
+                transformStyle = `translate3d(${dragOffset}px, 0, 0) rotate(${dragOffset * 0.04}deg)`;
+                opacityStyle = 1;
+                zIndexStyle = 30;
+              } else if (layer === 1) {
+                const shiftRatio = Math.min(Math.abs(dragOffset) / 100, 1);
+                const currentTranslateY = 14 - shiftRatio * 14;
+                const currentScale = 0.94 + shiftRatio * 0.06;
+                transformStyle = `translate3d(0, ${currentTranslateY}px, 0) scale(${currentScale})`;
+                opacityStyle = 0.75 + shiftRatio * 0.25;
+                zIndexStyle = 20;
+              } else {
+                const shiftRatio = Math.min(Math.abs(dragOffset) / 100, 1);
+                const currentTranslateY = 28 - shiftRatio * 14;
+                const currentScale = 0.88 + shiftRatio * 0.06;
+                transformStyle = `translate3d(0, ${currentTranslateY}px, 0) scale(${currentScale})`;
+                opacityStyle = 0.45 + shiftRatio * 0.3;
+                zIndexStyle = 10;
+              }
+
+              return (
+                <div
+                  key={`${itemIndex}-${layer}`}
+                  onTouchStart={isFront ? handleTouchStart : undefined}
+                  onTouchMove={isFront ? handleTouchMove : undefined}
+                  onTouchEnd={isFront ? handleTouchEnd : undefined}
+                  style={{
+                    transform: transformStyle,
+                    opacity: opacityStyle,
+                    zIndex: zIndexStyle,
+                    transition: isFront && isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease'
+                  }}
+                  className={`absolute inset-x-0 top-0 p-4 sm:p-5 rounded-2xl border border-theme-subtle bg-theme-card shadow-[0_12px_32px_-4px_rgba(15,23,42,0.12),0_4px_12px_rgba(0,152,187,0.08)] select-none ${
+                    isFront ? 'cursor-grab active:cursor-grabbing' : 'pointer-events-none'
+                  }`}
+                >
+                  {/* Card Header */}
+                  <div className="flex items-center justify-between pb-2.5 border-b border-theme-subtle/60 text-xs">
+                    <span className="font-heading font-bold text-xs px-2.5 py-0.5 rounded-full bg-accent-primary/10 text-accent-primary border border-accent-primary/25">
+                      Feature {itemIndex + 1} of {comparisonItems.length}
+                    </span>
+                    <span className="text-[11px] text-theme-subtle font-medium flex items-center gap-1">
+                      <span>Swipe card</span>
+                      <span className="text-accent-primary font-bold">↔</span>
+                    </span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-accent-primary/10 border border-accent-primary/30">
-                    <span className="text-[11px] uppercase font-bold text-accent-primary block mb-1">Full VinLens Report</span>
-                    <span className="text-theme-primary font-medium leading-tight">{item.full}</span>
+
+                  {/* Feature Title */}
+                  <h4 className="text-base sm:text-lg font-heading font-bold text-theme-primary tracking-tight mt-2.5 mb-3">
+                    {item.feature}
+                  </h4>
+
+                  {/* Side-by-Side Comparison Grid */}
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    {/* Free VIN check side */}
+                    <div className="p-3 rounded-xl bg-theme-secondary/80 border border-theme-subtle space-y-1">
+                      <span className="text-[10px] uppercase font-bold text-theme-subtle block tracking-wider">
+                        Free VIN Check
+                      </span>
+                      <div className="flex items-start gap-1.5 pt-0.5">
+                        {item.free === 'Not included' ? (
+                          <X className="w-3.5 h-3.5 text-rose-500 shrink-0 mt-0.5" />
+                        ) : (
+                          <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                        )}
+                        <span className={`leading-tight font-medium ${item.free === 'Not included' ? 'text-rose-500' : 'text-theme-muted'}`}>
+                          {item.free}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Full report side */}
+                    <div className="p-3 rounded-xl bg-gradient-to-br from-accent-primary/15 to-accent-primary/5 border border-accent-primary/30 shadow-2xs space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] uppercase font-bold text-accent-primary block tracking-wider">
+                          Full Report
+                        </span>
+                        <Sparkles className="w-3 h-3 text-accent-primary" />
+                      </div>
+                      <div className="flex items-start gap-1.5 pt-0.5">
+                        <Check className="w-3.5 h-3.5 text-accent-primary shrink-0 mt-0.5" />
+                        <span className="leading-tight font-semibold text-theme-primary">
+                          {item.full}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Reveal>
-          ))}
+              );
+            })}
+          </div>
+
+          {/* Deck Navigation Controls */}
+          <div className="flex items-center justify-center gap-3 pt-3">
+            <button
+              type="button"
+              onClick={prevCard}
+              aria-label="Previous feature"
+              className="w-9 h-9 rounded-xl bg-theme-card border border-theme-subtle shadow-xs flex items-center justify-center text-theme-muted hover:text-accent-primary hover:border-accent-primary/40 active:scale-95 transition-all cursor-pointer"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Step Indicators */}
+            <div className="flex items-center gap-1.5">
+              {comparisonItems.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setCurrentIndex(idx)}
+                  aria-label={`Jump to feature ${idx + 1}`}
+                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                    currentIndex === idx
+                      ? 'w-6 bg-accent-primary'
+                      : 'w-2 bg-theme-subtle/50 hover:bg-theme-muted'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={nextCard}
+              aria-label="Next feature"
+              className="w-9 h-9 rounded-xl bg-theme-card border border-theme-subtle shadow-xs flex items-center justify-center text-theme-muted hover:text-accent-primary hover:border-accent-primary/40 active:scale-95 transition-all cursor-pointer"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Action Callout */}
